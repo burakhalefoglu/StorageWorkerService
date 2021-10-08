@@ -11,6 +11,8 @@ import (
 	"StorageWorkerService/internal/manager/LevelBaseSessionDataManager"
 	"StorageWorkerService/internal/manager/LocationDataManager"
 	"StorageWorkerService/internal/manager/ManuelFlowManager"
+	"StorageWorkerService/internal/manager/MlResultMahagers/ChurnBlokerMlResultManager"
+	"StorageWorkerService/internal/manager/MlResultMahagers/ChurnPredictionMlResultManager"
 	"StorageWorkerService/internal/manager/OfferBehaviorManager"
 	"StorageWorkerService/internal/manager/ScreenClickDataManager"
 	"StorageWorkerService/internal/manager/ScreenSwipeDataManager"
@@ -29,5 +31,7 @@ func StartListening(){
 	kafkaAdapter.Consume("EnemyBaseWithLevelFailDataModel","EnemyBaseWithLevelFailDataModel_ConsumerGroup", EnemyBaseWithLevelFailDataManager.InsertEnemyBaseWithLevelFailDataModel)
 	kafkaAdapter.Consume("ManuelFlowModel","ManuelFlowModel_ConsumerGroup", ManuelFlowManager.InsertManuelFlowModel)
 	kafkaAdapter.Consume("OfferBehaviorModel","OfferBehaviorModel_ConsumerGroup", OfferBehaviorManager.InsertOfferBehaviorModel)
+	kafkaAdapter.Consume("ChurnBlokerMlResultModel","ChurnBlokerMlResultModel_ConsumerGroup", ChurnBlokerMlResultManager.InsertChurnBlokerMlResultModel)
+	kafkaAdapter.Consume("ChurnPredictionMlResultModel","ChurnPredictionMlResultModel_ConsumerGroup", ChurnPredictionMlResultManager.InsertChurnPredictionMlResultModel)
 	
 }

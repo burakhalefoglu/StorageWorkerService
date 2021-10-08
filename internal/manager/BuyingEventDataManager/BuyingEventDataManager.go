@@ -9,6 +9,7 @@ import (
 	jsonParser "StorageWorkerService/internal/helper/jsonParser"
 
 	"github.com/segmentio/kafka-go"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type BuyingEventDataModel struct{
@@ -23,6 +24,14 @@ type BuyingEventDataModel struct{
 	TrigerdTime time.Time
 }
 
+type ClientDataModel struct{
+
+	ClientId string
+	ProjectId string
+	IsPaidClient int
+	CreatedAt time.Time
+	PaidTime time.Time
+}
 
 func InsertBuyingEventDataModel(reader *kafka.Reader, m kafka.Message) {
 
@@ -31,9 +40,18 @@ func InsertBuyingEventDataModel(reader *kafka.Reader, m kafka.Message) {
 		log.Println(buyingEventDataModel)
 	
 	_, err:= mongodb.AddCollection(m.Topic, buyingEventDataModel)
-		if(err == nil) {
+
+		_, updateErr:= mongodb.UpdateCollection(m.Topic,
+			 bson.M{"ProjectId": buyingEventDataModel.ProjectId},
+			 bson.D{
+				{"$set", bson.D{{"IsPaidClient", 1}}},
+			})
+
+		if(err == nil && updateErr == nil) {
 				if err := reader.CommitMessages(context.Background(), m); err != nil {
 			log.Fatal("failed to commit messages:", err)
 		}
 	}
+	//TODO: burada kullanıcı paid olarak işaretlenecek.
+
 }

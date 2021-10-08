@@ -66,7 +66,7 @@ func AddCollection(collectionName string, data interface{}) ( m *mongo.InsertOne
 	return res, nil
 }
 
-func UpdateCollection(collectionName string, filter interface{},data interface{}){
+func UpdateCollection(collectionName string, filter interface{},data interface{}) ( m *mongo.UpdateResult, errors error){
 	
 	collection = mongoClient.Database("Client").Collection(collectionName)
 
@@ -74,6 +74,8 @@ func UpdateCollection(collectionName string, filter interface{},data interface{}
 
 	if(err != nil) {
 		log.Println(err)
+		return nil, err
 	}
 	log.Println(res)
+	return res, nil
 }
