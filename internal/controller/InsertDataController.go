@@ -1,0 +1,33 @@
+package InsertDataController
+
+import (
+	kafkaAdapter "StorageWorkerService/internal/helper/kafka"
+	"StorageWorkerService/internal/manager/AdvEventDataManager"
+	"StorageWorkerService/internal/manager/BuyingEventDataManager"
+	"StorageWorkerService/internal/manager/EnemyBaseEveryLoginLevelDatasManager"
+	"StorageWorkerService/internal/manager/EnemyBaseWithLevelFailDataManager"
+	"StorageWorkerService/internal/manager/GameSessionEveryLoginDataManager"
+	"StorageWorkerService/internal/manager/HardwareInformationManager"
+	"StorageWorkerService/internal/manager/LevelBaseSessionDataManager"
+	"StorageWorkerService/internal/manager/LocationDataManager"
+	"StorageWorkerService/internal/manager/ManuelFlowManager"
+	"StorageWorkerService/internal/manager/OfferBehaviorManager"
+	"StorageWorkerService/internal/manager/ScreenClickDataManager"
+	"StorageWorkerService/internal/manager/ScreenSwipeDataManager"
+)
+
+func StartListening(){
+	kafkaAdapter.Consume("AdvEventDataModel","AdvEventDataModel_ConsumerGroup", AdvEventDataManager.InsertAdvEventDataModel)
+	kafkaAdapter.Consume("BuyingEventDataModel","BuyingEventDataModel_ConsumerGroup", BuyingEventDataManager.InsertBuyingEventDataModel)
+	kafkaAdapter.Consume("HardwareIndormationModel","HardwareIndormationModel_ConsumerGroup", HardwareInformationManager.InsertHardwareInformationModel)
+	kafkaAdapter.Consume("LocationDataModel","LocationDataModel_ConsumerGroup", LocationDataManager.InsertLocationDataModel)
+	kafkaAdapter.Consume("ScreenSwipeDataModel","ScreenSwipeDataModel_ConsumerGroup", ScreenSwipeDataManager.InsertScreenSwipeDataModel)
+	kafkaAdapter.Consume("ScreenClickDataModel","ScreenClickDataModel_ConsumerGroup", ScreenClickDataManager.InsertScreenClickDataModel)
+	kafkaAdapter.Consume("LevelBaseSessionDataModel","LevelBaseSessionDataModel_ConsumerGroup", LevelBaseSessionDataManager.InsertLevelBaseSessionDataModel)
+	kafkaAdapter.Consume("GameSessionEveryLoginDataModel","GameSessionEveryLoginDataModel_ConsumerGroup", GameSessionEveryLoginDataManager.InsertGameSessionEveryLoginDataModel)
+	kafkaAdapter.Consume("EnemyBaseEveryLoginLevelDatasModel","EnemyBaseEveryLoginLevelDatasModel_ConsumerGroup", EnemyBaseEveryLoginLevelDatasManager.InsertEnemyBaseEveryLoginLevelDatasModel)
+	kafkaAdapter.Consume("EnemyBaseWithLevelFailDataModel","EnemyBaseWithLevelFailDataModel_ConsumerGroup", EnemyBaseWithLevelFailDataManager.InsertEnemyBaseWithLevelFailDataModel)
+	kafkaAdapter.Consume("ManuelFlowModel","ManuelFlowModel_ConsumerGroup", ManuelFlowManager.InsertManuelFlowModel)
+	kafkaAdapter.Consume("OfferBehaviorModel","OfferBehaviorModel_ConsumerGroup", OfferBehaviorManager.InsertOfferBehaviorModel)
+	
+}
