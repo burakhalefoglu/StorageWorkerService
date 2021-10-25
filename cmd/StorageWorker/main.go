@@ -1,12 +1,10 @@
 package main
 
 import (
-	InsertDataController "StorageWorkerService/internal/controller"
-	mongodb "StorageWorkerService/internal/dataAccess/mongodb"
+	"StorageWorkerService/internal/IoC"
+	"StorageWorkerService/internal/controller"
 )
 
 func main() {
-
-	mongodb.ConnectMongoDb()
-	InsertDataController.StartListening()
+	controller.StartInsertListener(IoC.InsertKafkaController)
 }
