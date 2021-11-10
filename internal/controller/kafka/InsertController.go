@@ -28,7 +28,7 @@ type InsertController struct {
 
 func (controller *InsertController) StartListen() {
 	var waitGroup sync.WaitGroup
-	waitGroup.Add(15)
+	waitGroup.Add(11)
 
 	go controller.Kafka.Consume("AdvEventDataModel",
 		"AdvEventDataModel_ConsumerGroup",
@@ -70,40 +70,41 @@ func (controller *InsertController) StartListen() {
 		&waitGroup,
 		controller.GameSessionM.AddGameSessionData)
 
-	go 	controller.Kafka.Consume("EnemyBaseEveryLoginLevelDataModel",
-		"EnemyBaseEveryLoginLevelDataModel_ConsumerGroup",
+	go 	controller.Kafka.Consume("InventoryDataModel",
+		"InventoryModel_ConsumerGroup",
 		&waitGroup,
-		controller.EnemyBaseLoginLM.AddEnemyBaseLoginLevelData)
+		controller.InventoryM.AddInventoryData)
 
-	go 	controller.Kafka.Consume("EnemyBaseWithLevelFailDataModel",
-		"EnemyBaseWithLevelFailDataModel_ConsumerGroup",
-		&waitGroup,
-		controller.EnemyBaseLevelFM.AddEnemyBaseLevelFailData)
 
-	go 	controller.Kafka.Consume("ManuelFlowModel",
-		"ManuelFlowModel_ConsumerGroup",
-		&waitGroup,
-		controller.ManuelFlowM.AddManuelFlowData)
+	//go 	controller.Kafka.Consume("EnemyBaseEveryLoginLevelDataModel",
+	//	"EnemyBaseEveryLoginLevelDataModel_ConsumerGroup",
+	//	&waitGroup,
+	//	controller.EnemyBaseLoginLM.AddEnemyBaseLoginLevelData)
+	//
+	//go 	controller.Kafka.Consume("EnemyBaseWithLevelFailDataModel",
+	//	"EnemyBaseWithLevelFailDataModel_ConsumerGroup",
+	//	&waitGroup,
+	//	controller.EnemyBaseLevelFM.AddEnemyBaseLevelFailData)
+
+	//go 	controller.Kafka.Consume("ManuelFlowModel",
+	//	"ManuelFlowModel_ConsumerGroup",
+	//	&waitGroup,
+	//	controller.ManuelFlowM.AddManuelFlowData)
 
 	go 	controller.Kafka.Consume("OfferBehaviorModel",
 		"OfferBehaviorModel_ConsumerGroup",
 		&waitGroup,
 		controller.OfferBehaviorM.AddOfferBehaviorData)
 
-	go 	controller.Kafka.Consume("ChurnBlockerMlResultModel",
-		"ChurnBlockerMlResultModel_ConsumerGroup",
-		&waitGroup,
-		controller.CBMlResultM.AddChurnBlockerMlResultData)
-
-	go 	controller.Kafka.Consume("ChurnPredictionMlResultModel",
+	go 	controller.Kafka.Consume("ChurnPredictionResultModel",
 		"ChurnPredictionMlResultModel_ConsumerGroup",
 		&waitGroup,
 		controller.CPMResultM.AddChurnPredictionMlResultData)
 
-	go 	controller.Kafka.Consume("InventoryModel",
-		"InventoryModel_ConsumerGroup",
-		&waitGroup,
-		controller.InventoryM.AddInventoryData)
+	//go 	controller.Kafka.Consume("ChurnBlockerResultModel",
+	//	"ChurnBlockerMlResultModel_ConsumerGroup",
+	//	&waitGroup,
+	//	controller.CBMlResultM.AddChurnBlockerMlResultData)
 
 	waitGroup.Wait()
 }
