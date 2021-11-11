@@ -10,6 +10,12 @@ type MockClientService struct {
 }
 
 
+
+func (m *MockClientService)AddClientData(data *[]byte)(success bool,message string){
+	args := m.Called(data)
+	return  args.Bool(0), args.String(1)
+}
+
 func (m *MockClientService)UpdateClientByClientId(clientId string,
 	data *model.ClientDataModel)(success bool,message string) {
 	args := m.Called(clientId, data)
