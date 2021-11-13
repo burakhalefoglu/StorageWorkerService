@@ -25,7 +25,7 @@ func Test_AddClient_SuccessIsTrue(t *testing.T) {
 
 
 	//Act
-	success, err:= client.AddClientData(message)
+	success, err:= client.AddClient(message)
 
 
 	//Assert
@@ -47,7 +47,7 @@ func Test_AddClient_SuccessIsFalse(t *testing.T) {
 
 
 	//Act
-	success, err:= client.AddClientData(message)
+	success, err:= client.AddClient(message)
 
 
 	//Assert
@@ -64,10 +64,10 @@ func Test_UpdateByClientId_SuccessIsTrue(t *testing.T) {
 		ClientDal: testObj,
 	}
 	m:= model.ClientDataModel{}
-	testObj.On("UpdateByClientId","fakeClientId", &m).Return(nil)
+	testObj.On("UpdateById","fakeClientId", &m).Return(nil)
 
 	//Act
-	success, err:= client.UpdateClientByClientId("fakeClientId", &m)
+	success, err:= client.UpdateByClientId("fakeClientId", &m)
 
 
 	//Assert
@@ -84,10 +84,10 @@ func Test_UpdateByClientId_SuccessIsFalse(t *testing.T) {
 		ClientDal: testObj,
 	}
 	m:= model.ClientDataModel{}
-	testObj.On("UpdateByClientId","fakeClientId", &m).Return(errors.New("FakeError"))
+	testObj.On("UpdateById","fakeClientId", &m).Return(errors.New("FakeError"))
 
 	//Act
-	success, err:= client.UpdateClientByClientId("fakeClientId", &m)
+	success, err:= client.UpdateByClientId("fakeClientId", &m)
 
 
 	//Assert
@@ -146,5 +146,5 @@ func Test_GetByClientId_SuccessIsFalse(t *testing.T) {
 	//Assert
 	assert.Equal(t, false, success)
 	assert.Equal(t, "FakeError", err)
-	assert.Equal(t, (*model.ClientDataModel)(nil), mdl)
+	assert.Nil(t, mdl)
 }

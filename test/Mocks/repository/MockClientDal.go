@@ -14,7 +14,7 @@ func (m *MockClientDal)Add(data *model.ClientDataModel) error {
 	return  args.Error(0)
 }
 
-func (m *MockClientDal)UpdateByClientId(clientId string, data *model.ClientDataModel) error {
+func (m *MockClientDal)UpdateById(clientId string, data *model.ClientDataModel) error {
 	args := m.Called(clientId, data)
 	return  args.Error(0)
 }

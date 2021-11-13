@@ -7,7 +7,9 @@ require github.com/goccy/go-json v0.7.9
 require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/google/uuid v1.3.0
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/segmentio/kafka-go v0.4.23
 	github.com/stretchr/testify v1.6.1
 	go.mongodb.org/mongo-driver v1.7.3
 	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.7.0
@@ -19,7 +21,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/kr/pretty v0.2.1 // indirect
+	github.com/pierrec/lz4 v2.6.0+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect

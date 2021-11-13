@@ -11,7 +11,7 @@ type ClientManager struct {
 	ClientDal abstract.IClientDal
 }
 
-func (c *ClientManager)AddClientData(data *[]byte)(success bool,message string){
+func (c *ClientManager)AddClient(data *[]byte)(success bool,message string){
 
 	client := model.ClientDataModel{}
 	c.Parser.DecodeJson(data, &client)
@@ -23,9 +23,9 @@ func (c *ClientManager)AddClientData(data *[]byte)(success bool,message string){
 	return  true, ""
 }
 
-func (c *ClientManager)UpdateClientByClientId(clientId string, data *model.ClientDataModel)(success bool,message string){
+func (c *ClientManager)UpdateByClientId(clientId string, data *model.ClientDataModel)(success bool,message string){
 
-	err:= c.ClientDal.UpdateByClientId(clientId, data)
+	err:= c.ClientDal.UpdateById(clientId, data)
 	if err != nil {
 		return  false, err.Error()
 	}

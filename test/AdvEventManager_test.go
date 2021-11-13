@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func Test_AdvEvent_SuccessIsTrue(t *testing.T) {
+func Test_AddAdvEvent_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockAdvEventDal)
@@ -25,14 +25,15 @@ func Test_AdvEvent_SuccessIsTrue(t *testing.T) {
 
 	//Act
 	success, err:= advEventManager.AddAdvEventData(message)
-	assert.Equal(t, "", err)
 
 
 	//Assert
 	assert.Equal(t, true, success)
+	assert.Equal(t, "", err)
+
 }
 
-func Test_AdvEvent_SuccessIsFalse(t *testing.T) {
+func Test_AddAdvEvent_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockAdvEventDal)

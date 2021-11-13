@@ -29,7 +29,7 @@ func (buying *BuyingEventManager)AddBuyingEventData(data *[]byte)(success bool,m
 	}
 	if clientModel.IsPaidClient == 0{
 		clientModel.IsPaidClient = 1
-		success, message := buying.ClientService.UpdateClientByClientId(clientModel.ClientId, clientModel)
+		success, message := buying.ClientService.UpdateByClientId(clientModel.ClientId, clientModel)
 		if success != true{
 			return  false, message
 		}

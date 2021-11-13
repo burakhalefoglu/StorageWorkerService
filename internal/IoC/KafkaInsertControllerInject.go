@@ -6,11 +6,11 @@ import (
 	ManagerConcrete "StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/database/mongodb"
 	"StorageWorkerService/pkg/jsonParser/gojson"
-	"StorageWorkerService/pkg/kafka/confluent"
+	"StorageWorkerService/pkg/kafka/kafkago"
 )
 
 var InsertKafkaController = &KafkaInsertController.InsertController{
-	Kafka: &confluent.Kafka{},
+	Kafka: &kafkago.KafkaGo{},
 
 	AdvM: &ManagerConcrete.AdvEventManager{
 		Parser: &gojson.GoJson{},
@@ -23,6 +23,12 @@ var InsertKafkaController = &KafkaInsertController.InsertController{
 		Parser: &gojson.GoJson{},
 		BuyingEventDal: &mongodb_driver.MDbDBuyingEventDal{
 			Client: mongodb.Conn.Conn,
+		},
+		ClientService: &ManagerConcrete.ClientManager{
+			Parser:    &gojson.GoJson{},
+			ClientDal:  &mongodb_driver.MDbDClientDal{
+				Client: mongodb.Conn.Conn,
+			},
 		},
 	},
 

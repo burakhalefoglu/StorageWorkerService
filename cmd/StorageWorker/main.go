@@ -6,5 +6,8 @@ import (
 )
 
 func main() {
+
+
+
 	controller.StartInsertListener(IoC.InsertKafkaController)
 }

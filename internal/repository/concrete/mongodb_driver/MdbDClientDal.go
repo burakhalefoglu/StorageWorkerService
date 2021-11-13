@@ -32,7 +32,7 @@ func (m *MDbDClientDal) Add(data *model.ClientDataModel) error{
 	return nil
 }
 
-func (m *MDbDClientDal) UpdateByClientId(clientId string, data *model.ClientDataModel) error {
+func (m *MDbDClientDal) UpdateById(clientId string, data *model.ClientDataModel) error {
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -55,7 +55,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	return nil
 }
 
-func (m *MDbDClientDal) GetByClientId(clientId string)(*model.ClientDataModel, error){
+func (m *MDbDClientDal) GetById(clientId string)(*model.ClientDataModel, error){
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

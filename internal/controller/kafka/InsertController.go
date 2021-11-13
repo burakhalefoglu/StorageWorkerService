@@ -28,7 +28,7 @@ type InsertController struct {
 
 func (controller *InsertController) StartListen() {
 	var waitGroup sync.WaitGroup
-	waitGroup.Add(11)
+	waitGroup.Add(15)
 
 	go controller.Kafka.Consume("AdvEventDataModel",
 		"AdvEventDataModel_ConsumerGroup",
@@ -76,20 +76,20 @@ func (controller *InsertController) StartListen() {
 		controller.InventoryM.AddInventoryData)
 
 
-	//go 	controller.Kafka.Consume("EnemyBaseEveryLoginLevelDataModel",
-	//	"EnemyBaseEveryLoginLevelDataModel_ConsumerGroup",
-	//	&waitGroup,
-	//	controller.EnemyBaseLoginLM.AddEnemyBaseLoginLevelData)
-	//
-	//go 	controller.Kafka.Consume("EnemyBaseWithLevelFailDataModel",
-	//	"EnemyBaseWithLevelFailDataModel_ConsumerGroup",
-	//	&waitGroup,
-	//	controller.EnemyBaseLevelFM.AddEnemyBaseLevelFailData)
+	go 	controller.Kafka.Consume("EnemyBaseEveryLoginLevelDataModel",
+		"EnemyBaseEveryLoginLevelDataModel_ConsumerGroup",
+		&waitGroup,
+		controller.EnemyBaseLoginLM.AddEnemyBaseLoginLevelData)
 
-	//go 	controller.Kafka.Consume("ManuelFlowModel",
-	//	"ManuelFlowModel_ConsumerGroup",
-	//	&waitGroup,
-	//	controller.ManuelFlowM.AddManuelFlowData)
+	go 	controller.Kafka.Consume("EnemyBaseWithLevelFailDataModel",
+		"EnemyBaseWithLevelFailDataModel_ConsumerGroup",
+		&waitGroup,
+		controller.EnemyBaseLevelFM.AddEnemyBaseLevelFailData)
+
+	go 	controller.Kafka.Consume("ManuelFlowModel",
+		"ManuelFlowModel_ConsumerGroup",
+		&waitGroup,
+		controller.ManuelFlowM.AddManuelFlowData)
 
 	go 	controller.Kafka.Consume("OfferBehaviorModel",
 		"OfferBehaviorModel_ConsumerGroup",
@@ -101,10 +101,10 @@ func (controller *InsertController) StartListen() {
 		&waitGroup,
 		controller.CPMResultM.AddChurnPredictionMlResultData)
 
-	//go 	controller.Kafka.Consume("ChurnBlockerResultModel",
-	//	"ChurnBlockerMlResultModel_ConsumerGroup",
-	//	&waitGroup,
-	//	controller.CBMlResultM.AddChurnBlockerMlResultData)
+	go 	controller.Kafka.Consume("ChurnBlockerResultModel",
+		"ChurnBlockerMlResultModel_ConsumerGroup",
+		&waitGroup,
+		controller.CBMlResultM.AddChurnBlockerMlResultData)
 
 	waitGroup.Wait()
 }

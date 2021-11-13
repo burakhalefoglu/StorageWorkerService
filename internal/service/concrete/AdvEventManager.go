@@ -11,6 +11,7 @@ type AdvEventManager struct {
 	AdvEventDal abstract.IAdvEventDal
 }
 
+
 func (adv *AdvEventManager)AddAdvEventData(data *[]byte)(success bool,message string){
 
 		advEventDataModel := model.AdvEventDataModel{}

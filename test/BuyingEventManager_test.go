@@ -46,7 +46,7 @@ func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, false, "NoClient")
 
-	testClientService.On("UpdateClientByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.ClientId,
 		&clientModel).Return(true, "")
 
 	//Act
@@ -93,7 +93,7 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, true, "")
 
-	testClientService.On("UpdateClientByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.ClientId,
 		&clientModel).Return(false, "UpdateError")
 
 	//Act
@@ -140,7 +140,7 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, true, "")
 
-	testClientService.On("UpdateClientByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.ClientId,
 		&clientModel).Return(true, "")
 
 	//Act
