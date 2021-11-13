@@ -8,6 +8,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.3.0
+	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/segmentio/kafka-go v0.4.23
 	github.com/stretchr/testify v1.6.1
