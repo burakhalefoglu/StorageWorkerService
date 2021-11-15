@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type ScreenClickManager struct {
+type screenClickManager struct {
 	Parser jsonparser.IJsonParser
 	ScreenClickDal abstract.IScreenClickDal
 }
 
-func (scr *ScreenClickManager)AddScreenClickData(data *[]byte)(success bool,message string){
+func ScreenClickManagerConstructor(parser jsonparser.IJsonParser,
+	screenClickDal abstract.IScreenClickDal) *screenClickManager {
+	return &screenClickManager{Parser: parser, ScreenClickDal: screenClickDal}
+}
+
+func (scr *screenClickManager)AddScreenClickData(data *[]byte)(success bool,message string){
 
 	screenClickData := model.ScreenClickModel{}
 	scr.Parser.DecodeJson(data, &screenClickData)

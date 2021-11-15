@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type LevelBaseSessionManager struct {
+type levelBaseSessionManager struct {
 	Parser jsonparser.IJsonParser
 	LevelBaseSessionDal abstract.ILevelBaseSessionDal
 }
 
-func (lvl *LevelBaseSessionManager)AddLevelBaseSessionData(data *[]byte)(success bool,message string){
+func LevelBaseSessionManagerConstructor(parser jsonparser.IJsonParser,
+	levelBaseSessionDal abstract.ILevelBaseSessionDal) *levelBaseSessionManager {
+	return &levelBaseSessionManager{Parser: parser, LevelBaseSessionDal: levelBaseSessionDal}
+}
+
+func (lvl *levelBaseSessionManager)AddLevelBaseSessionData(data *[]byte)(success bool,message string){
 
 	m := model.LevelBaseSessionModel{}
 	lvl.Parser.DecodeJson(data, &m)

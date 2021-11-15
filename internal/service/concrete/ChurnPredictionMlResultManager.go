@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type ChurnPredictionMlResultManager struct {
+type churnPredictionMlResultManager struct {
 	Parser jsonparser.IJsonParser
 	ChurnPredictionMlResultDal abstract.IChurnPredictionMlResultDal
 }
 
-func (c *ChurnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte)(success bool,message string){
+func ChurnPredictionMlResultManagerConstructor(parser jsonparser.IJsonParser,
+	churnPredictionMlResultDal abstract.IChurnPredictionMlResultDal) *churnPredictionMlResultManager {
+	return &churnPredictionMlResultManager{Parser: parser, ChurnPredictionMlResultDal: churnPredictionMlResultDal}
+}
+
+func (c *churnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte)(success bool,message string){
 
 	m := model.ChurnPredictionMlResultModel{}
 	c.Parser.DecodeJson(data, &m)

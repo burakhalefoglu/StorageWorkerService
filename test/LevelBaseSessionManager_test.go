@@ -14,17 +14,15 @@ func Test_LevelBaseSession_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockLevelBaseSessionDal)
-	LevelBaseSession := concrete.LevelBaseSessionManager{
-		Parser:      &gojson.GoJson{},
-		LevelBaseSessionDal: testObj,
-	}
+	levelBaseSession := concrete.LevelBaseSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.LevelBaseSessionModel{}
 	testObj.On("Add", &m).Return(nil)
-	message, _ := LevelBaseSession.Parser.EncodeJson(&m)
+	message, _ := levelBaseSession.Parser.EncodeJson(&m)
 
 
 	//Act
-	success, err:= LevelBaseSession.AddLevelBaseSessionData(message)
+	success, err:= levelBaseSession.AddLevelBaseSessionData(message)
 
 
 	//Assert
@@ -36,10 +34,8 @@ func Test_LevelBaseSession_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockLevelBaseSessionDal)
-	levelBaseSession := concrete.LevelBaseSessionManager{
-		Parser:      &gojson.GoJson{},
-		LevelBaseSessionDal: testObj,
-	}
+	levelBaseSession := concrete.LevelBaseSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.LevelBaseSessionModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := levelBaseSession.Parser.EncodeJson(&m)

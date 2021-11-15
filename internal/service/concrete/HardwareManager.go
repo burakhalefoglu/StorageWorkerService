@@ -8,12 +8,17 @@ import (
 
 
 
-type HardwareManager struct {
+type hardwareManager struct {
 	Parser jsonparser.IJsonParser
 	HardwareDal abstract.IHardwareDal
 }
 
-func (hrd *HardwareManager)AddHardwareData(data *[]byte)(success bool,message string){
+func HardwareManagerConstructor(parser jsonparser.IJsonParser,
+	hardwareDal abstract.IHardwareDal) *hardwareManager {
+	return &hardwareManager{Parser: parser, HardwareDal: hardwareDal}
+}
+
+func (hrd *hardwareManager)AddHardwareData(data *[]byte)(success bool,message string){
 
 	hardwareModel := model.HardwareModel{}
 	hrd.Parser.DecodeJson(data, &hardwareModel)

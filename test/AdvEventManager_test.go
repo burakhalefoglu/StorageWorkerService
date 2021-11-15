@@ -14,10 +14,8 @@ func Test_AddAdvEvent_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockAdvEventDal)
-	advEventManager:= concrete.AdvEventManager{
-		Parser:      &gojson.GoJson{},
-		AdvEventDal: testObj,
-	}
+	advEventManager:= concrete.AdvEventManagerConstructor(gojson.GoJsonConstructor(),testObj)
+
 	m:= model.AdvEventDataModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := advEventManager.Parser.EncodeJson(&m)
@@ -37,10 +35,8 @@ func Test_AddAdvEvent_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockAdvEventDal)
-	advEventManager:= concrete.AdvEventManager{
-		Parser:      &gojson.GoJson{},
-		AdvEventDal: testObj,
-	}
+	advEventManager:= concrete.AdvEventManagerConstructor(gojson.GoJsonConstructor(),testObj)
+
 	m:= model.AdvEventDataModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := advEventManager.Parser.EncodeJson(&m)

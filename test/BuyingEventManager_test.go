@@ -17,11 +17,7 @@ func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManager{
-		Parser:      &gojson.GoJson{},
-		BuyingEventDal: testBuyingEventDal,
-		ClientService: testClientService,
-	}
+	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
 
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
@@ -64,11 +60,8 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManager{
-		Parser:      &gojson.GoJson{},
-		BuyingEventDal: testBuyingEventDal,
-		ClientService: testClientService,
-	}
+	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
+
 
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
@@ -112,11 +105,8 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManager{
-		Parser:      &gojson.GoJson{},
-		BuyingEventDal: testBuyingEventDal,
-		ClientService: testClientService,
-	}
+	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
+
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
 		ProjectId:     "FakeProjectId",

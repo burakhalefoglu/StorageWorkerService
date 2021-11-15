@@ -7,13 +7,17 @@ import (
 )
 
 
-type LocationManager struct {
+type locationManager struct {
 	Parser jsonparser.IJsonParser
 	LocationDal abstract.ILocationDal
 }
 
+func LocationManagerConstructor(parser jsonparser.IJsonParser,
+	locationDal abstract.ILocationDal) *locationManager {
+	return &locationManager{Parser: parser, LocationDal: locationDal}
+}
 
-func (loc *LocationManager)AddLocationData(data *[]byte)(success bool,message string){
+func (loc *locationManager)AddLocationData(data *[]byte)(success bool,message string){
 	locationModel := model.LocationModel{}
 	loc.Parser.DecodeJson(data, &locationModel)
 

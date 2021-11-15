@@ -14,10 +14,8 @@ func Test_ScreenSwipe_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockScreenSwipeDal)
-	screenSwipe := concrete.ScreenSwipeManager{
-		Parser:      &gojson.GoJson{},
-		ScreenSwipeDal: testObj,
-	}
+	screenSwipe := concrete.ScreenSwipeManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ScreenSwipeModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := screenSwipe.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_ScreenSwipe_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockScreenSwipeDal)
-	screenSwipe := concrete.ScreenSwipeManager{
-		Parser:           &gojson.GoJson{},
-		ScreenSwipeDal: testObj,
-	}
+	screenSwipe := concrete.ScreenSwipeManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m := model.ScreenSwipeModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := screenSwipe.Parser.EncodeJson(&m)

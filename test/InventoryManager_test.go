@@ -14,10 +14,8 @@ func Test_Inventory_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockInventoryDal)
-	inventoryManager := concrete.InventoryManager{
-		Parser:      &gojson.GoJson{},
-		InventoryDal: testObj,
-	}
+	inventoryManager := concrete.InventoryManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.InventoryModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := inventoryManager.Parser.EncodeJson(&m)
@@ -36,17 +34,15 @@ func Test_Inventory_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockInventoryDal)
-	inventory := concrete.InventoryManager{
-		Parser:      &gojson.GoJson{},
-		InventoryDal: testObj,
-	}
+	inventoryManager := concrete.InventoryManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.InventoryModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := inventory.Parser.EncodeJson(&m)
+	message, _ := inventoryManager.Parser.EncodeJson(&m)
 
 
 	//Act
-	success, err:= inventory.AddInventoryData(message)
+	success, err:= inventoryManager.AddInventoryData(message)
 
 
 	//Assert

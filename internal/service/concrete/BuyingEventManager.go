@@ -7,14 +7,20 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type BuyingEventManager struct {
+type buyingEventManager struct {
 	Parser jsonparser.IJsonParser
 	BuyingEventDal abstractRepo.IBuyingEventDal
 	ClientService abstractService.IClientService
 }
 
+func BuyingEventManagerConstructor(parser jsonparser.IJsonParser,
+	buyingEventDal abstractRepo.IBuyingEventDal,
+	clientService abstractService.IClientService) *buyingEventManager {
+	return &buyingEventManager{Parser: parser, BuyingEventDal: buyingEventDal, ClientService: clientService}
+}
+
 //! Transaction gerekecek.
-func (buying *BuyingEventManager)AddBuyingEventData(data *[]byte)(success bool,message string){
+func (buying *buyingEventManager)AddBuyingEventData(data *[]byte)(success bool,message string){
 
 	buyingEventModel := model.BuyingEventModel{}
 	buying.Parser.DecodeJson(data, &buyingEventModel)

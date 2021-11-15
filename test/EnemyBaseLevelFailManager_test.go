@@ -14,10 +14,8 @@ func Test_EnemyBaseLevelFail_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockEnemyBaseLevelFailDal)
-	enemyBaseLevelFail := concrete.EnemyBaseLevelFailManager{
-		Parser:      &gojson.GoJson{},
-		EnemyBaseLevelFailDal: testObj,
-	}
+	enemyBaseLevelFail := concrete.EnemyBaseLevelFailManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.EnemyBaseLevelFailModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := enemyBaseLevelFail.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_EnemyBaseLevelFail_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockEnemyBaseLevelFailDal)
-	enemyBaseLevelFail:= concrete.EnemyBaseLevelFailManager{
-		Parser:      &gojson.GoJson{},
-		EnemyBaseLevelFailDal: testObj,
-	}
+	enemyBaseLevelFail := concrete.EnemyBaseLevelFailManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.EnemyBaseLevelFailModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := enemyBaseLevelFail.Parser.EncodeJson(&m)

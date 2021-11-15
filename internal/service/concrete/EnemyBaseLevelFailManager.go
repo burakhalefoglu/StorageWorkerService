@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type EnemyBaseLevelFailManager struct {
+type enemyBaseLevelFailManager struct {
 	Parser jsonparser.IJsonParser
 	EnemyBaseLevelFailDal abstract.IEnemyBaseLevelFailDal
 }
 
-func (e *EnemyBaseLevelFailManager)AddEnemyBaseLevelFailData(data *[]byte)(success bool,message string){
+func EnemyBaseLevelFailManagerConstructor(parser jsonparser.IJsonParser,
+	enemyBaseLevelFailDal abstract.IEnemyBaseLevelFailDal) *enemyBaseLevelFailManager {
+	return &enemyBaseLevelFailManager{Parser: parser, EnemyBaseLevelFailDal: enemyBaseLevelFailDal}
+}
+
+func (e *enemyBaseLevelFailManager)AddEnemyBaseLevelFailData(data *[]byte)(success bool,message string){
 
 	m := model.EnemyBaseLevelFailModel{}
 	e.Parser.DecodeJson(data, &m)

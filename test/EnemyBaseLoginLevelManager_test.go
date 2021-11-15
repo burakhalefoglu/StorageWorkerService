@@ -14,10 +14,8 @@ func Test_EnemyBaseLoginLevel_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockEnemyBaseLoginLevelDal)
-	enemyBaseLoginLevel := concrete.EnemyBaseLoginLevelManager{
-		Parser:      &gojson.GoJson{},
-		EnemyBaseLoginLevelDal: testObj,
-	}
+	enemyBaseLoginLevel := concrete.EnemyBaseLoginLevelManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.EnemyBaseLoginLevelModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := enemyBaseLoginLevel.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_EnemyBaseLoginLevel_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockEnemyBaseLoginLevelDal)
-	enemyBaseLoginLevel:= concrete.EnemyBaseLoginLevelManager{
-		Parser:      &gojson.GoJson{},
-		EnemyBaseLoginLevelDal: testObj,
-	}
+	enemyBaseLoginLevel := concrete.EnemyBaseLoginLevelManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.EnemyBaseLoginLevelModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := enemyBaseLoginLevel.Parser.EncodeJson(&m)

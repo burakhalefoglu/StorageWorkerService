@@ -14,10 +14,8 @@ func Test_Location_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockLocationDal)
-	location := concrete.LocationManager{
-		Parser:      &gojson.GoJson{},
-		LocationDal: testObj,
-	}
+	location := concrete.LocationManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.LocationModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := location.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_Location_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockLocationDal)
-	location := concrete.LocationManager{
-		Parser:      &gojson.GoJson{},
-		LocationDal: testObj,
-	}
+	location := concrete.LocationManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.LocationModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := location.Parser.EncodeJson(&m)

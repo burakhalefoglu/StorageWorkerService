@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type ChurnBlockerMlResultManager struct {
+type churnBlockerMlResultManager struct {
 	Parser jsonparser.IJsonParser
 	ChurnBlockerMlResultDal abstract.IChurnBlockerMlResultDal
 }
 
-func (c *ChurnBlockerMlResultManager)AddChurnBlockerMlResultData(data *[]byte)(success bool,message string){
+func ChurnBlockerMlResultManagerConstructor(parser jsonparser.IJsonParser,
+	churnBlockerMlResultDal abstract.IChurnBlockerMlResultDal) *churnBlockerMlResultManager {
+	return &churnBlockerMlResultManager{Parser: parser, ChurnBlockerMlResultDal: churnBlockerMlResultDal}
+}
+
+func (c *churnBlockerMlResultManager)AddChurnBlockerMlResultData(data *[]byte)(success bool,message string){
 
 	m := model.ChurnBlockerMlResultModel{}
 	c.Parser.DecodeJson(data, &m)

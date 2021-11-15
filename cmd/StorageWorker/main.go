@@ -2,9 +2,12 @@ package main
 
 import (
 	"StorageWorkerService/internal/IoC"
+	"StorageWorkerService/internal/IoC/golobby"
 	"StorageWorkerService/internal/controller"
+	"StorageWorkerService/internal/controller/kafka"
 	"github.com/joho/godotenv"
 	"log"
+	"sync"
 )
 
 func main() {
@@ -13,5 +16,10 @@ func main() {
 		log.Fatal("Error loading .env file")
 		return
 	}
-	controller.StartInsertListener(IoC.InsertKafkaController)
+
+	IoC.InjectContainers(golobby.InjectionConstructor())
+
+	var waitGroup sync.WaitGroup
+	IController.StartInsertListener(&waitGroup, KafkaController.InsertControllerConstructor())
+	waitGroup.Wait()
 }

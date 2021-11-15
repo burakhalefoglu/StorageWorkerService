@@ -6,13 +6,16 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type ManuelFlowManager struct {
+type manuelFlowManager struct {
 	Parser jsonparser.IJsonParser
 	ManuelFlowDal abstract.IManuelFlowDal
 }
 
+func ManuelFlowManagerConstructor(parser jsonparser.IJsonParser, manuelFlowDal abstract.IManuelFlowDal) *manuelFlowManager {
+	return &manuelFlowManager{Parser: parser, ManuelFlowDal: manuelFlowDal}
+}
 
-func (f *ManuelFlowManager)AddManuelFlowData(data *[]byte)(success bool,message string){
+func (f *manuelFlowManager)AddManuelFlowData(data *[]byte)(success bool,message string){
 	m := model.ManuelFlowModel{}
 	f.Parser.DecodeJson(data, &m)
 

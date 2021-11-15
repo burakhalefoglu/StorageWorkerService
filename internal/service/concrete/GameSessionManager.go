@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type GameSessionManager struct {
+type gameSessionManager struct {
 	Parser jsonparser.IJsonParser
 	GameSessionDal abstract.IGameSessionDal
 }
 
-func (g *GameSessionManager)AddGameSessionData(data *[]byte)(success bool,message string){
+func GameSessionManagerConstructor(parser jsonparser.IJsonParser,
+	gameSessionDal abstract.IGameSessionDal) *gameSessionManager {
+	return &gameSessionManager{Parser: parser, GameSessionDal: gameSessionDal}
+}
+
+func (g *gameSessionManager)AddGameSessionData(data *[]byte)(success bool,message string){
 
 	m := model.GameSessionModel{}
 	g.Parser.DecodeJson(data, &m)

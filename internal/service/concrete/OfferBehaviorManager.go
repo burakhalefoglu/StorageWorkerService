@@ -6,13 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type OfferBehaviorManager struct {
+type offerBehaviorManager struct {
 	Parser jsonparser.IJsonParser
 	OfferBehaviorDal abstract.IOfferBehaviorDal
 }
 
+func OfferBehaviorManagerConstructor(parser jsonparser.IJsonParser,
+	offerBehaviorDal abstract.IOfferBehaviorDal) *offerBehaviorManager {
+	return &offerBehaviorManager{Parser: parser, OfferBehaviorDal: offerBehaviorDal}
+}
 
-func (o *OfferBehaviorManager)AddOfferBehaviorData(data *[]byte)(success bool,message string){
+func (o *offerBehaviorManager)AddOfferBehaviorData(data *[]byte)(success bool,message string){
 	m := model.OfferBehaviorModel{}
 	o.Parser.DecodeJson(data, &m)
 

@@ -2,17 +2,22 @@ package mongodb_driver
 
 import (
 	"StorageWorkerService/internal/model"
+	"StorageWorkerService/pkg/database/mongodb"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
 
-type MDbDChurnBlockerMlResultDal struct {
+type mDbDChurnBlockerMlResultDal struct {
 	Client *mongo.Client
 }
 
-func (m *MDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel) error{
+func MDbDChurnBlockerMlResultDalConstructor() *mDbDChurnBlockerMlResultDal {
+	return &mDbDChurnBlockerMlResultDal{Client: mongodb.GetMongodbClient()}
+}
+
+func (m *mDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel) error{
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

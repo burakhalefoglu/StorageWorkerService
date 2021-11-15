@@ -14,10 +14,8 @@ func Test_Hardware_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockHardwareDal)
-	hardware := concrete.HardwareManager{
-		Parser:      &gojson.GoJson{},
-		HardwareDal: testObj,
-	}
+	hardware := concrete.HardwareManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.HardwareModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := hardware.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_Hardware_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockHardwareDal)
-	hardware := concrete.HardwareManager{
-		Parser:      &gojson.GoJson{},
-		HardwareDal: testObj,
-	}
+	hardware := concrete.HardwareManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	
 	m:= model.HardwareModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := hardware.Parser.EncodeJson(&m)

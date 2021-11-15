@@ -2,17 +2,22 @@ package mongodb_driver
 
 import (
 	"StorageWorkerService/internal/model"
+	"StorageWorkerService/pkg/database/mongodb"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
 
-type MDbDHardwareDal struct {
+type mDbDHardwareDal struct {
 	Client *mongo.Client
 }
 
-func (m *MDbDHardwareDal) Add(data *model.HardwareModel) error{
+func MDbDHardwareDalConstructor() *mDbDHardwareDal {
+	return &mDbDHardwareDal{Client: mongodb.GetMongodbClient()}
+}
+
+func (m *mDbDHardwareDal) Add(data *model.HardwareModel) error{
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -14,10 +14,8 @@ func Test_ChurnBlocker_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockChurnBlockerMlResultDal)
-	churnBlocker := concrete.ChurnBlockerMlResultManager{
-		Parser:      &gojson.GoJson{},
-		ChurnBlockerMlResultDal: testObj,
-	}
+	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ChurnBlockerMlResultModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := churnBlocker.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_ChurnBlocker_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockChurnBlockerMlResultDal)
-	churnBlocker:= concrete.ChurnBlockerMlResultManager{
-		Parser:      &gojson.GoJson{},
-		ChurnBlockerMlResultDal: testObj,
-	}
+	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ChurnBlockerMlResultModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := churnBlocker.Parser.EncodeJson(&m)

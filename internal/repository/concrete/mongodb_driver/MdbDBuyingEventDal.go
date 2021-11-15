@@ -2,17 +2,22 @@ package mongodb_driver
 
 import (
 "StorageWorkerService/internal/model"
-"context"
+	"StorageWorkerService/pkg/database/mongodb"
+	"context"
 "go.mongodb.org/mongo-driver/bson"
 "go.mongodb.org/mongo-driver/mongo"
 "time"
 )
 
-type MDbDBuyingEventDal struct {
+type mDbDBuyingEventDal struct {
 	Client *mongo.Client
 }
 
-func (m *MDbDBuyingEventDal) Add(data *model.BuyingEventModel) error{
+func MDbDBuyingEventDalConstructor() *mDbDBuyingEventDal {
+	return &mDbDBuyingEventDal{Client: mongodb.GetMongodbClient()}
+}
+
+func (m *mDbDBuyingEventDal) Add(data *model.BuyingEventModel) error{
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

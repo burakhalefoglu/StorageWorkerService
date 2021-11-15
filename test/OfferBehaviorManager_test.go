@@ -14,10 +14,8 @@ func Test_OfferBehavior_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockOfferBehaviorDal)
-	offerBehavior := concrete.OfferBehaviorManager{
-		Parser:      &gojson.GoJson{},
-		OfferBehaviorDal: testObj,
-	}
+	offerBehavior := concrete.OfferBehaviorManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.OfferBehaviorModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := offerBehavior.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_OfferBehavior_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockOfferBehaviorDal)
-	offerBehavior := concrete.OfferBehaviorManager{
-		Parser:           &gojson.GoJson{},
-		OfferBehaviorDal: testObj,
-	}
+	offerBehavior := concrete.OfferBehaviorManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m := model.OfferBehaviorModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := offerBehavior.Parser.EncodeJson(&m)

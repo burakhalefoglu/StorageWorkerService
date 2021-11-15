@@ -14,10 +14,8 @@ func Test_ScreenClick_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockScreenClickDal)
-	screenClick := concrete.ScreenClickManager{
-		Parser:      &gojson.GoJson{},
-		ScreenClickDal: testObj,
-	}
+	screenClick := concrete.ScreenClickManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ScreenClickModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := screenClick.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_ScreenClick_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockScreenClickDal)
-	screenClick := concrete.ScreenClickManager{
-		Parser:           &gojson.GoJson{},
-		ScreenClickDal: testObj,
-	}
+	screenClick := concrete.ScreenClickManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m := model.ScreenClickModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := screenClick.Parser.EncodeJson(&m)

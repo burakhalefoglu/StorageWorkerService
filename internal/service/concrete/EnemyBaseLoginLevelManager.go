@@ -6,12 +6,17 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type EnemyBaseLoginLevelManager struct {
+type enemyBaseLoginLevelManager struct {
 	Parser jsonparser.IJsonParser
 	EnemyBaseLoginLevelDal abstract.IEnemyBaseLoginLevelDal
 }
 
-func (e *EnemyBaseLoginLevelManager)AddEnemyBaseLoginLevelData(data *[]byte)(success bool,message string){
+func EnemyBaseLoginLevelManagerConstructor(parser jsonparser.IJsonParser,
+	enemyBaseLoginLevelDal abstract.IEnemyBaseLoginLevelDal) *enemyBaseLoginLevelManager {
+	return &enemyBaseLoginLevelManager{Parser: parser, EnemyBaseLoginLevelDal: enemyBaseLoginLevelDal}
+}
+
+func (e *enemyBaseLoginLevelManager)AddEnemyBaseLoginLevelData(data *[]byte)(success bool,message string){
 
 	m := model.EnemyBaseLoginLevelModel{}
 	e.Parser.DecodeJson(data, &m)

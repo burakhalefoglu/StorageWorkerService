@@ -6,12 +6,16 @@ import (
 	jsonparser "StorageWorkerService/pkg/jsonParser"
 )
 
-type ScreenSwipeManager struct {
+type screenSwipeManager struct {
 	Parser jsonparser.IJsonParser
 	ScreenSwipeDal abstract.IScreenSwipeDal
 }
 
-func (scr *ScreenSwipeManager)AddScreenSwipeData(data *[]byte)(success bool,message string){
+func ScreenSwipeManagerConstructor(parser jsonparser.IJsonParser, screenSwipeDal abstract.IScreenSwipeDal) *screenSwipeManager {
+	return &screenSwipeManager{Parser: parser, ScreenSwipeDal: screenSwipeDal}
+}
+
+func (scr *screenSwipeManager)AddScreenSwipeData(data *[]byte)(success bool,message string){
 
 	screenSwipeData := model.ScreenSwipeModel{}
 	scr.Parser.DecodeJson(data, &screenSwipeData)

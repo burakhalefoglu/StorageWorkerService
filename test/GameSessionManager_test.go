@@ -14,10 +14,8 @@ func Test_GameSession_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockGameSessionDal)
-	gameSession := concrete.GameSessionManager{
-		Parser:      &gojson.GoJson{},
-		GameSessionDal: testObj,
-	}
+	gameSession := concrete.GameSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.GameSessionModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := gameSession.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_GameSession_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockGameSessionDal)
-	gameSession:= concrete.GameSessionManager{
-		Parser:      &gojson.GoJson{},
-		GameSessionDal: testObj,
-	}
+	gameSession := concrete.GameSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.GameSessionModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := gameSession.Parser.EncodeJson(&m)

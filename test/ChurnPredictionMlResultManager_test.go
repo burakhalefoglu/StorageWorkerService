@@ -14,10 +14,8 @@ func Test_ChurnPrediction_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockChurnPredictionDal)
-	churnPrediction := concrete.ChurnPredictionMlResultManager{
-		Parser:      &gojson.GoJson{},
-		ChurnPredictionMlResultDal: testObj,
-	}
+	churnPrediction := concrete.ChurnPredictionMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ChurnPredictionMlResultModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := churnPrediction.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_ChurnPrediction_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockChurnPredictionDal)
-	churnPrediction:= concrete.ChurnPredictionMlResultManager{
-		Parser:      &gojson.GoJson{},
-		ChurnPredictionMlResultDal: testObj,
-	}
+	churnPrediction := concrete.ChurnPredictionMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+
 	m:= model.ChurnPredictionMlResultModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := churnPrediction.Parser.EncodeJson(&m)

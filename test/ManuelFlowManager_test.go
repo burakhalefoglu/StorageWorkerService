@@ -14,10 +14,8 @@ func Test_ManuelFlow_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockManuelFlowDal)
-	manuelFlow := concrete.ManuelFlowManager{
-		Parser:      &gojson.GoJson{},
-		ManuelFlowDal: testObj,
-	}
+	manuelFlow := concrete.ManuelFlowManagerConstructor(gojson.GoJsonConstructor(),testObj)
+
 	m:= model.ManuelFlowModel{}
 	testObj.On("Add", &m).Return(nil)
 	message, _ := manuelFlow.Parser.EncodeJson(&m)
@@ -36,10 +34,8 @@ func Test_ManuelFlow_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
 	testObj := new(repository.MockManuelFlowDal)
-	manuelFlow := concrete.ManuelFlowManager{
-		Parser:      &gojson.GoJson{},
-		ManuelFlowDal: testObj,
-	}
+	manuelFlow := concrete.ManuelFlowManagerConstructor(gojson.GoJsonConstructor(),testObj)
+
 	m:= model.ManuelFlowModel{}
 	testObj.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := manuelFlow.Parser.EncodeJson(&m)

@@ -5,13 +5,16 @@ go 1.17
 require github.com/goccy/go-json v0.7.9
 
 require (
+	github.com/bshuster-repo/logrus-logstash-hook v1.0.2
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/golobby/container/v3 v3.0.2
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/segmentio/kafka-go v0.4.23
-	github.com/stretchr/testify v1.6.1
+	github.com/sirupsen/logrus v1.8.1
+	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.7.3
 	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.7.0
 )
