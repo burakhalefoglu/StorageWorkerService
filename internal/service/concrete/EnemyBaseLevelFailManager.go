@@ -1,28 +1,44 @@
 package concrete
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
-	jsonparser "StorageWorkerService/pkg/jsonParser"
+	JsonParser "StorageWorkerService/pkg/jsonParser"
+	"StorageWorkerService/pkg/logger"
 )
 
 type enemyBaseLevelFailManager struct {
-	Parser jsonparser.IJsonParser
-	EnemyBaseLevelFailDal abstract.IEnemyBaseLevelFailDal
+	Parser *JsonParser.IJsonParser
+	EnemyBaseLevelFailDal *abstract.IEnemyBaseLevelFailDal
+	Log *logger.ILog
 }
 
-func EnemyBaseLevelFailManagerConstructor(parser jsonparser.IJsonParser,
-	enemyBaseLevelFailDal abstract.IEnemyBaseLevelFailDal) *enemyBaseLevelFailManager {
-	return &enemyBaseLevelFailManager{Parser: parser, EnemyBaseLevelFailDal: enemyBaseLevelFailDal}
+
+func EnemyBaseLevelFailManagerConstructor() *enemyBaseLevelFailManager {
+	return &enemyBaseLevelFailManager{Parser: &IoC.JsonParser,
+		EnemyBaseLevelFailDal: &IoC.EnemyBaseLevelFailDal,
+		Log: &IoC.Logger}
 }
+
 
 func (e *enemyBaseLevelFailManager)AddEnemyBaseLevelFailData(data *[]byte)(success bool,message string){
 
 	m := model.EnemyBaseLevelFailModel{}
-	e.Parser.DecodeJson(data, &m)
+	parseErr := (*e.Parser).DecodeJson(data, &m)
+	if parseErr != nil {
+		(*e.Log).SendErrorLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
+			"DecodeJson Error", parseErr.Error())
+		return false, parseErr.Error()
+	}
+	defer (*e.Log).SendInfoLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
+		m.ClientId, m.ProjectId)
 
-	err:= e.EnemyBaseLevelFailDal.Add(&m)
+	err:= (*e.EnemyBaseLevelFailDal).Add(&m)
 	if err != nil {
+		(*e.Log).SendErrorLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData_Add",
+			m.ClientId, m.ProjectId, err.Error())
+
 		return  false, err.Error()
 	}
 	return  true, ""

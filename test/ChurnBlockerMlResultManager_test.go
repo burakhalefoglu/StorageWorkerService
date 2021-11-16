@@ -1,9 +1,11 @@
 package test
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
+	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -13,12 +15,19 @@ import (
 func Test_ChurnBlocker_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockChurnBlockerMlResultDal)
-	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testChurnBlockerDal = new(repository.MockChurnBlockerMlResultDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ChurnBlockerMlResultDal = testChurnBlockerDal
+	IoC.Logger = testLog
+
+	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor()
 
 	m:= model.ChurnBlockerMlResultModel{}
-	testObj.On("Add", &m).Return(nil)
-	message, _ := churnBlocker.Parser.EncodeJson(&m)
+	testChurnBlockerDal.On("Add", &m).Return(nil)
+	message, _ := (*churnBlocker.Parser).EncodeJson(&m)
 
 
 	//Act
@@ -33,12 +42,19 @@ func Test_ChurnBlocker_SuccessIsTrue(t *testing.T) {
 func Test_ChurnBlocker_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockChurnBlockerMlResultDal)
-	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testChurnBlockerDal = new(repository.MockChurnBlockerMlResultDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ChurnBlockerMlResultDal = testChurnBlockerDal
+	IoC.Logger = testLog
+
+	churnBlocker := concrete.ChurnBlockerMlResultManagerConstructor()
 
 	m:= model.ChurnBlockerMlResultModel{}
-	testObj.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := churnBlocker.Parser.EncodeJson(&m)
+	testChurnBlockerDal.On("Add", &m).Return(errors.New("FakeError"))
+	message, _ := (*churnBlocker.Parser).EncodeJson(&m)
 
 
 	//Act

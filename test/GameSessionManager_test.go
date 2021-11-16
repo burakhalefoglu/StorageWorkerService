@@ -1,9 +1,11 @@
 package test
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
+	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -13,12 +15,19 @@ import (
 func Test_GameSession_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockGameSessionDal)
-	gameSession := concrete.GameSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testGameSessionDal = new(repository.MockGameSessionDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.GameSessionDal = testGameSessionDal
+	IoC.Logger = testLog
+
+	gameSession := concrete.GameSessionManagerConstructor()
 
 	m:= model.GameSessionModel{}
-	testObj.On("Add", &m).Return(nil)
-	message, _ := gameSession.Parser.EncodeJson(&m)
+	testGameSessionDal.On("Add", &m).Return(nil)
+	message, _ := (*gameSession.Parser).EncodeJson(&m)
 
 
 	//Act
@@ -33,12 +42,19 @@ func Test_GameSession_SuccessIsTrue(t *testing.T) {
 func Test_GameSession_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockGameSessionDal)
-	gameSession := concrete.GameSessionManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testGameSessionDal = new(repository.MockGameSessionDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.GameSessionDal = testGameSessionDal
+	IoC.Logger = testLog
+
+	gameSession := concrete.GameSessionManagerConstructor()
 
 	m:= model.GameSessionModel{}
-	testObj.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := gameSession.Parser.EncodeJson(&m)
+	testGameSessionDal.On("Add", &m).Return(errors.New("FakeError"))
+	message, _ := (*gameSession.Parser).EncodeJson(&m)
 
 
 	//Act

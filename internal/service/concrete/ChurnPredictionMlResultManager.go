@@ -1,28 +1,42 @@
 package concrete
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
-	jsonparser "StorageWorkerService/pkg/jsonParser"
+	JsonParser "StorageWorkerService/pkg/jsonParser"
+	"StorageWorkerService/pkg/logger"
 )
 
 type churnPredictionMlResultManager struct {
-	Parser jsonparser.IJsonParser
-	ChurnPredictionMlResultDal abstract.IChurnPredictionMlResultDal
+	Parser *JsonParser.IJsonParser
+	ChurnPredictionMlResultDal *abstract.IChurnPredictionMlResultDal
+	Log *logger.ILog
 }
 
-func ChurnPredictionMlResultManagerConstructor(parser jsonparser.IJsonParser,
-	churnPredictionMlResultDal abstract.IChurnPredictionMlResultDal) *churnPredictionMlResultManager {
-	return &churnPredictionMlResultManager{Parser: parser, ChurnPredictionMlResultDal: churnPredictionMlResultDal}
+func ChurnPredictionMlResultManagerConstructor() *churnPredictionMlResultManager {
+	return &churnPredictionMlResultManager{Parser: &IoC.JsonParser,
+		ChurnPredictionMlResultDal: &IoC.ChurnPredictionMlResultDal,
+	Log: &IoC.Logger}
 }
 
 func (c *churnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte)(success bool,message string){
 
-	m := model.ChurnPredictionMlResultModel{}
-	c.Parser.DecodeJson(data, &m)
+	churnPredictionModel := model.ChurnPredictionMlResultModel{}
+	parseErr := (*c.Parser).DecodeJson(data, &churnPredictionModel)
+	if parseErr != nil {
+		(*c.Log).SendErrorLog("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
+			"DecodeJson Error", parseErr.Error())
+		return false, parseErr.Error()
+	}
 
-	err:= c.ChurnPredictionMlResultDal.Add(&m)
+	defer (*c.Log).SendInfoLog("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
+		churnPredictionModel.ClientId, churnPredictionModel.ProjectId)
+
+	err:= (*c.ChurnPredictionMlResultDal).Add(&churnPredictionModel)
 	if err != nil {
+		(*c.Log).SendErrorLog("ChurnPredictionMlResultManager", "ChurnPredictionMlResultManager_Add",
+			churnPredictionModel.ClientId, churnPredictionModel.ProjectId, err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

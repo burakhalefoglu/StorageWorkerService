@@ -1,30 +1,44 @@
 package concrete
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
-	jsonparser "StorageWorkerService/pkg/jsonParser"
+	JsonParser "StorageWorkerService/pkg/jsonParser"
+	"StorageWorkerService/pkg/logger"
 )
 
 
 
 type hardwareManager struct {
-	Parser jsonparser.IJsonParser
-	HardwareDal abstract.IHardwareDal
+	Parser *JsonParser.IJsonParser
+	HardwareDal *abstract.IHardwareDal
+	Log *logger.ILog
 }
 
-func HardwareManagerConstructor(parser jsonparser.IJsonParser,
-	hardwareDal abstract.IHardwareDal) *hardwareManager {
-	return &hardwareManager{Parser: parser, HardwareDal: hardwareDal}
+func HardwareManagerConstructor() *hardwareManager {
+	return &hardwareManager{Parser: &IoC.JsonParser,
+		HardwareDal: &IoC.HardwareDal,
+		Log: &IoC.Logger}
 }
 
 func (hrd *hardwareManager)AddHardwareData(data *[]byte)(success bool,message string){
 
 	hardwareModel := model.HardwareModel{}
-	hrd.Parser.DecodeJson(data, &hardwareModel)
+	parseErr := (*hrd.Parser).DecodeJson(data, &hardwareModel)
+	if parseErr != nil {
+		(*hrd.Log).SendErrorLog("HardwareManager", "AddHardwareData",
+			"DecodeJson Error", parseErr.Error())
+		return false, parseErr.Error()
+	}
 
-	err:= hrd.HardwareDal.Add(&hardwareModel)
+	defer (*hrd.Log).SendInfoLog("HardwareManager", "AddHardwareData",
+		hardwareModel.ClientId, hardwareModel.ProjectId)
+
+	err:= (*hrd.HardwareDal).Add(&hardwareModel)
 	if err != nil {
+		(*hrd.Log).SendErrorLog("HardwareManager", "AddHardwareData_Add",
+			hardwareModel.ClientId, hardwareModel.ProjectId, err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

@@ -12,26 +12,26 @@ import (
 	"testing"
 )
 
-func Test_Hardware_SuccessIsTrue(t *testing.T) {
+func Test_Location_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	var testHardwareDal = new(repository.MockHardwareDal)
+	var testLocationDal = new(repository.MockLocationDal)
 	var json = gojson.GoJsonConstructor()
 	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
-	IoC.HardwareDal = testHardwareDal
+	IoC.LocationDal = testLocationDal
 	IoC.Logger = testLog
 
-	hardware := concrete.HardwareManagerConstructor()
+	location := concrete.LocationManagerConstructor()
 
-	m:= model.HardwareModel{}
-	testHardwareDal.On("Add", &m).Return(nil)
-	message, _ := (*hardware.Parser).EncodeJson(&m)
+	m:= model.LocationModel{}
+	testLocationDal.On("Add", &m).Return(nil)
+	message, _ := (*location.Parser).EncodeJson(&m)
 
 
 	//Act
-	success, err:= hardware.AddHardwareData(message)
+	success, err:= location.AddLocationData(message)
 
 
 	//Assert
@@ -39,26 +39,26 @@ func Test_Hardware_SuccessIsTrue(t *testing.T) {
 	assert.Equal(t, "", err)
 }
 
-func Test_Hardware_SuccessIsFalse(t *testing.T) {
+func Test_Location_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	var testHardwareDal = new(repository.MockHardwareDal)
+	var testLocationDal = new(repository.MockLocationDal)
 	var json = gojson.GoJsonConstructor()
 	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
-	IoC.HardwareDal = testHardwareDal
+	IoC.LocationDal = testLocationDal
 	IoC.Logger = testLog
 
-	hardware := concrete.HardwareManagerConstructor()
-	
-	m:= model.HardwareModel{}
-	testHardwareDal.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := (*hardware.Parser).EncodeJson(&m)
+	location := concrete.LocationManagerConstructor()
+
+	m:= model.LocationModel{}
+	testLocationDal.On("Add", &m).Return(errors.New("FakeError"))
+	message, _ := (*location.Parser).EncodeJson(&m)
 
 
 	//Act
-	success, err:= hardware.AddHardwareData(message)
+	success, err:= location.AddLocationData(message)
 
 
 	//Assert

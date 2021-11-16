@@ -1,28 +1,42 @@
 package concrete
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
-	jsonparser "StorageWorkerService/pkg/jsonParser"
+	JsonParser "StorageWorkerService/pkg/jsonParser"
+	"StorageWorkerService/pkg/logger"
 )
 
 
 type locationManager struct {
-	Parser jsonparser.IJsonParser
-	LocationDal abstract.ILocationDal
+	Parser *JsonParser.IJsonParser
+	LocationDal *abstract.ILocationDal
+	Log *logger.ILog
 }
 
-func LocationManagerConstructor(parser jsonparser.IJsonParser,
-	locationDal abstract.ILocationDal) *locationManager {
-	return &locationManager{Parser: parser, LocationDal: locationDal}
+func LocationManagerConstructor() *locationManager {
+	return &locationManager{Parser: &IoC.JsonParser,
+		LocationDal: &IoC.LocationDal,
+		Log: &IoC.Logger}
 }
 
 func (loc *locationManager)AddLocationData(data *[]byte)(success bool,message string){
 	locationModel := model.LocationModel{}
-	loc.Parser.DecodeJson(data, &locationModel)
+	parseErr := (*loc.Parser).DecodeJson(data, &locationModel)
+	if parseErr != nil {
+		(*loc.Log).SendErrorLog("locationManager", "AddLocationData",
+			"DecodeJson Error", parseErr.Error())
+		return false, parseErr.Error()
+	}
 
-	err:= loc.LocationDal.Add(&locationModel)
+	defer (*loc.Log).SendInfoLog("locationManager", "AddLocationData",
+		locationModel.ClientId, locationModel.ProjectId)
+
+	err:= (*loc.LocationDal).Add(&locationModel)
 	if err != nil {
+		(*loc.Log).SendErrorLog("locationManager", "AddLocationData_Add",
+			locationModel.ClientId, locationModel.ProjectId, err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

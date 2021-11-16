@@ -1,9 +1,11 @@
 package test
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
+	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"StorageWorkerService/test/Mocks/service"
 	"github.com/stretchr/testify/assert"
@@ -11,13 +13,20 @@ import (
 	"time"
 )
 
-
 func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
+	var testLog = new(Log.MockLogger)
+	var json = gojson.GoJsonConstructor()
+
+	IoC.JsonParser = json
+	IoC.BuyingEventDal = testBuyingEventDal
+	IoC.ClientService = testClientService
+	IoC.Logger = testLog
+
+	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
@@ -30,7 +39,7 @@ func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
-	message, _ := buyingEvent.Parser.EncodeJson(&m)
+	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
 	clientModel:= model.ClientDataModel{
 		ClientId:     "",
@@ -60,8 +69,15 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
+	var testLog = new(Log.MockLogger)
+	var json = gojson.GoJsonConstructor()
 
+	IoC.JsonParser = json
+	IoC.BuyingEventDal = testBuyingEventDal
+	IoC.ClientService = testClientService
+	IoC.Logger = testLog
+
+	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
@@ -74,7 +90,7 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
-	message, _ := buyingEvent.Parser.EncodeJson(&m)
+	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
 	clientModel:= model.ClientDataModel{
 		ClientId:     "FakeClientId",
@@ -105,7 +121,15 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var buyingEvent = concrete.BuyingEventManagerConstructor(gojson.GoJsonConstructor(), testBuyingEventDal, testClientService)
+	var testLog = new(Log.MockLogger)
+	var json = gojson.GoJsonConstructor()
+
+	IoC.JsonParser = json
+	IoC.BuyingEventDal = testBuyingEventDal
+	IoC.ClientService = testClientService
+	IoC.Logger = testLog
+
+	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
 	m:= model.BuyingEventModel{
 		ClientId:      "FakeClientId",
@@ -118,7 +142,8 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
-	message, _ := buyingEvent.Parser.EncodeJson(&m)
+
+	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
 	clientModel:= model.ClientDataModel{
 		ClientId:     "FakeClientId",

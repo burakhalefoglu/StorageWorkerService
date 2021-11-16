@@ -1,9 +1,11 @@
 package test
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
+	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -13,12 +15,19 @@ import (
 func Test_AddAdvEvent_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockAdvEventDal)
-	advEventManager:= concrete.AdvEventManagerConstructor(gojson.GoJsonConstructor(),testObj)
+	var testAdvDal = new(repository.MockAdvEventDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.AdvEventDal = testAdvDal
+	IoC.Logger = testLog
+
+	advEventManager:= concrete.AdvEventManagerConstructor()
 
 	m:= model.AdvEventDataModel{}
-	testObj.On("Add", &m).Return(nil)
-	message, _ := advEventManager.Parser.EncodeJson(&m)
+	testAdvDal.On("Add", &m).Return(nil)
+	message, _ := (*advEventManager.Parser).EncodeJson(&m)
 
 
 	//Act
@@ -34,12 +43,19 @@ func Test_AddAdvEvent_SuccessIsTrue(t *testing.T) {
 func Test_AddAdvEvent_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockAdvEventDal)
-	advEventManager:= concrete.AdvEventManagerConstructor(gojson.GoJsonConstructor(),testObj)
+	mockAdvDal := new(repository.MockAdvEventDal)
+	json := gojson.GoJsonConstructor()
+	mockLog :=new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.AdvEventDal = mockAdvDal
+	IoC.Logger = mockLog
+
+	advEventManager:= concrete.AdvEventManagerConstructor()
 
 	m:= model.AdvEventDataModel{}
-	testObj.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := advEventManager.Parser.EncodeJson(&m)
+	mockAdvDal.On("Add", &m).Return(errors.New("FakeError"))
+	message, _ := (*advEventManager.Parser).EncodeJson(&m)
 
 
 	//Act

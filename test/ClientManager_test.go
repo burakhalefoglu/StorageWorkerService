@@ -1,9 +1,11 @@
 package test
 
 import (
+	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
+	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -14,12 +16,19 @@ import (
 func Test_AddClient_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{}
-	testObj.On("Add", &m).Return(nil)
-	message, _ := client.Parser.EncodeJson(&m)
+	testClientDal.On("Add", &m).Return(nil)
+	message, _ := (*client.Parser).EncodeJson(&m)
 
 
 	//Act
@@ -34,12 +43,19 @@ func Test_AddClient_SuccessIsTrue(t *testing.T) {
 func Test_AddClient_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{}
-	testObj.On("Add", &m).Return(errors.New("FakeError"))
-	message, _ := client.Parser.EncodeJson(&m)
+	testClientDal.On("Add", &m).Return(errors.New("FakeError"))
+	message, _ := (*client.Parser).EncodeJson(&m)
 
 
 	//Act
@@ -54,11 +70,18 @@ func Test_AddClient_SuccessIsFalse(t *testing.T) {
 func Test_UpdateByClientId_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{}
-	testObj.On("UpdateById","fakeClientId", &m).Return(nil)
+	testClientDal.On("UpdateById","fakeClientId", &m).Return(nil)
 
 	//Act
 	success, err:= client.UpdateByClientId("fakeClientId", &m)
@@ -72,11 +95,18 @@ func Test_UpdateByClientId_SuccessIsTrue(t *testing.T) {
 func Test_UpdateByClientId_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{}
-	testObj.On("UpdateById","fakeClientId", &m).Return(errors.New("FakeError"))
+	testClientDal.On("UpdateById","fakeClientId", &m).Return(errors.New("FakeError"))
 
 	//Act
 	success, err:= client.UpdateByClientId("fakeClientId", &m)
@@ -90,8 +120,15 @@ func Test_UpdateByClientId_SuccessIsFalse(t *testing.T) {
 func Test_GetByClientId_SuccessIsTrue(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{
 		ClientId:     "FakeClientId",
@@ -100,7 +137,7 @@ func Test_GetByClientId_SuccessIsTrue(t *testing.T) {
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
-	testObj.On("GetById","fakeClientId").Return(&m, nil)
+	testClientDal.On("GetById","fakeClientId").Return(&m, nil)
 
 	//Act
 	mdl,success, err:= client.GetByClientId("fakeClientId")
@@ -115,8 +152,15 @@ func Test_GetByClientId_SuccessIsTrue(t *testing.T) {
 func Test_GetByClientId_SuccessIsFalse(t *testing.T) {
 
 	//Arrange
-	testObj := new(repository.MockClientDal)
-	client := concrete.ClientManagerConstructor(gojson.GoJsonConstructor(), testObj)
+	var testClientDal = new(repository.MockClientDal)
+	var json = gojson.GoJsonConstructor()
+	var testLog = new(Log.MockLogger)
+
+	IoC.JsonParser = json
+	IoC.ClientDal = testClientDal
+	IoC.Logger = testLog
+
+	client := concrete.ClientManagerConstructor()
 
 	m:= model.ClientDataModel{
 		ClientId:     "FakeClientId",
@@ -125,7 +169,7 @@ func Test_GetByClientId_SuccessIsFalse(t *testing.T) {
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
-	testObj.On("GetById","fakeClientId").Return(&m, errors.New("FakeError"))
+	testClientDal.On("GetById","fakeClientId").Return(&m, errors.New("FakeError"))
 
 	//Act
 	mdl,success, err:= client.GetByClientId("fakeClientId")
