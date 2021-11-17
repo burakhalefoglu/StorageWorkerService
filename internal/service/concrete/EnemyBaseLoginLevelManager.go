@@ -23,11 +23,10 @@ func EnemyBaseLoginLevelManagerConstructor() *enemyBaseLoginLevelManager {
 func (e *enemyBaseLoginLevelManager)AddEnemyBaseLoginLevelData(data *[]byte)(success bool,message string){
 
 	m := model.EnemyBaseLoginLevelModel{}
-	parseErr := (*e.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*e.Parser).DecodeJson(data, &m); err != nil {
 		(*e.Log).SendErrorLog("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
-			"DecodeJson Error", parseErr.Error())
-		return false,  parseErr.Error()
+			"byte array to EnemyBaseLoginLevelModel", "Json Parser Decode Err: ", err.Error())
+		return false,  err.Error()
 	}
 
 	defer (*e.Log).SendInfoLog("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
@@ -35,8 +34,8 @@ func (e *enemyBaseLoginLevelManager)AddEnemyBaseLoginLevelData(data *[]byte)(suc
 
 	err:= (*e.EnemyBaseLoginLevelDal).Add(&m)
 	if err != nil {
-		(*e.Log).SendErrorLog("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData_Add",
-			m.ClientId, m.ProjectId, err.Error())
+		(*e.Log).SendErrorLog("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
+			"EnemyBaseLoginLevelDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

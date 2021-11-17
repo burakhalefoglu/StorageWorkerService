@@ -22,19 +22,17 @@ func ManuelFlowManagerConstructor() *manuelFlowManager {
 
 func (f *manuelFlowManager)AddManuelFlowData(data *[]byte)(success bool,message string){
 	m := model.ManuelFlowModel{}
-	parseErr := (*f.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*f.Parser).DecodeJson(data, &m); err != nil {
 		(*f.Log).SendErrorLog("ManuelFlowManager", "AddManuelFlowData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to ManuelFlowModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 	defer (*f.Log).SendInfoLog("ManuelFlowManager", "AddManuelFlowData",
 		m.ClientId, m.ProjectId)
 
-	err:= (*f.ManuelFlowDal).Add(&m)
-	if err != nil {
-		(*f.Log).SendErrorLog("ManuelFlowManager", "AddManuelFlowData_Add",
-			m.ClientId, m.ProjectId, err.Error())
+	if err:= (*f.ManuelFlowDal).Add(&m); err != nil {
+		(*f.Log).SendErrorLog("ManuelFlowManager", "AddManuelFlowData",
+			"ManuelFlowDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

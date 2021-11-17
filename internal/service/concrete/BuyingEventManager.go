@@ -26,20 +26,19 @@ func BuyingEventManagerConstructor() *buyingEventManager {
 func (buying *buyingEventManager)AddBuyingEventData(data *[]byte)(success bool,message string){
 
 	buyingEventModel := model.BuyingEventModel{}
-	err := (*buying.Parser).DecodeJson(data, &buyingEventModel)
-	if err != nil {
-		(*buying.Log).SendErrorLog("BuyingEventManager", "AddBuyingEventData_JsonParse",
-			"DecodeJson Error", err.Error())
+	if err := (*buying.Parser).DecodeJson(data, &buyingEventModel); err != nil {
+		(*buying.Log).SendErrorLog("BuyingEventManager", "AddAdvEventData",
+			"byte array to BuyingEventModel", "Json Parser Decode Err: ", err.Error())
 		return false, err.Error()
 	}
+
 	defer (*buying.Log).SendInfoLog("BuyingEventManager", "AddBuyingEventData",
 		buyingEventModel.ClientId, buyingEventModel.ProjectId)
 
-	resultErr:= (*buying.BuyingEventDal).Add(&buyingEventModel)
-	if resultErr != nil {
-		(*buying.Log).SendErrorLog("BuyingEventManager", "BuyingEventManager_Add",
-			buyingEventModel.ClientId, buyingEventModel.ProjectId, err.Error())
-		return  false, resultErr.Error()
+	if err := (*buying.BuyingEventDal).Add(&buyingEventModel); err != nil {
+		(*buying.Log).SendErrorLog("BuyingEventManager", "AddBuyingEventData",
+			"BuyingEventDal_Add", err.Error())
+		return  false, err.Error()
 	}
 
 	var clientModel, s, m = (*buying.ClientService).GetByClientId(buyingEventModel.ClientId)

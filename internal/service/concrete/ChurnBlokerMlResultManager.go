@@ -23,19 +23,18 @@ func ChurnBlockerMlResultManagerConstructor() *churnBlockerMlResultManager {
 func (c *churnBlockerMlResultManager)AddChurnBlockerMlResultData(data *[]byte)(success bool,message string){
 
 	churnBlockerModel := model.ChurnBlockerMlResultModel{}
-	parseErr := (*c.Parser).DecodeJson(data, &churnBlockerModel)
-	if parseErr != nil {
+	if err := (*c.Parser).DecodeJson(data, &churnBlockerModel); err != nil {
 		(*c.Log).SendErrorLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to ChurnBlockerMlResultModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
+
 	defer (*c.Log).SendInfoLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
 		churnBlockerModel.ClientId, churnBlockerModel.ProjectId)
 
-	err:= (*c.ChurnBlockerMlResultDal).Add(&churnBlockerModel)
-	if err != nil {
-		(*c.Log).SendErrorLog("churnBlockerMlResultManager", "AddAdvEventData_Add",
-			churnBlockerModel.ClientId, churnBlockerModel.ProjectId, err.Error())
+	if err := (*c.ChurnBlockerMlResultDal).Add(&churnBlockerModel); err != nil {
+		(*c.Log).SendErrorLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
+			"ChurnBlockerMlResultDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

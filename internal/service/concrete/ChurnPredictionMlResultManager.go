@@ -23,20 +23,18 @@ func ChurnPredictionMlResultManagerConstructor() *churnPredictionMlResultManager
 func (c *churnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte)(success bool,message string){
 
 	churnPredictionModel := model.ChurnPredictionMlResultModel{}
-	parseErr := (*c.Parser).DecodeJson(data, &churnPredictionModel)
-	if parseErr != nil {
+	if err := (*c.Parser).DecodeJson(data, &churnPredictionModel); err != nil {
 		(*c.Log).SendErrorLog("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to ChurnPredictionMlResultModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*c.Log).SendInfoLog("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
 		churnPredictionModel.ClientId, churnPredictionModel.ProjectId)
 
-	err:= (*c.ChurnPredictionMlResultDal).Add(&churnPredictionModel)
-	if err != nil {
-		(*c.Log).SendErrorLog("ChurnPredictionMlResultManager", "ChurnPredictionMlResultManager_Add",
-			churnPredictionModel.ClientId, churnPredictionModel.ProjectId, err.Error())
+	if err:= (*c.ChurnPredictionMlResultDal).Add(&churnPredictionModel); err != nil {
+		(*c.Log).SendErrorLog("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
+			"ChurnPredictionMlResultDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

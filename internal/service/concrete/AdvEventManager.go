@@ -21,20 +21,18 @@ func AdvEventManagerConstructor() *advEventManager {
 func (adv *advEventManager)AddAdvEventData(data *[]byte)(success bool,message string){
 
 	advEventDataModel := model.AdvEventDataModel{}
-	parseErr := (*adv.Parser).DecodeJson(data, &advEventDataModel)
-	if parseErr != nil {
+	if err := (*adv.Parser).DecodeJson(data, &advEventDataModel); err != nil {
 		(*adv.Log).SendErrorLog("AdvEventManager", "AddAdvEventData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to AdvEventDataModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*adv.Log).SendInfoLog("AdvEventManager", "AddAdvEventData",
 		advEventDataModel.ClientId, advEventDataModel.ProjectId)
 
-	err:= (*adv.AdvEventDal).Add(&advEventDataModel)
-		if err != nil {
-			(*adv.Log).SendErrorLog("AdvEventManager", "AddAdvEventData_Add",
-				advEventDataModel.ClientId, advEventDataModel.ProjectId, err.Error())
+	if err:= (*adv.AdvEventDal).Add(&advEventDataModel); err != nil {
+			(*adv.Log).SendErrorLog("AdvEventManager", "AddAdvEventData",
+				"AdvEventDal_Add", err.Error())
 		return  false, err.Error()
 		}
 

@@ -405,7 +405,7 @@ func injectLogger() {
 
 func injectCache() {
 	if err := container.Transient(func() cache.ICache {
-		return rediscachev8.RedisCacheConstructor()
+		return rediscachev8.RedisCacheConstructor(&IoC.Logger)
 	}); err != nil{
 		panic(err)
 	}

@@ -25,19 +25,18 @@ func EnemyBaseLevelFailManagerConstructor() *enemyBaseLevelFailManager {
 func (e *enemyBaseLevelFailManager)AddEnemyBaseLevelFailData(data *[]byte)(success bool,message string){
 
 	m := model.EnemyBaseLevelFailModel{}
-	parseErr := (*e.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*e.Parser).DecodeJson(data, &m); err != nil {
 		(*e.Log).SendErrorLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to EnemyBaseLevelFailModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
+
 	defer (*e.Log).SendInfoLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
 		m.ClientId, m.ProjectId)
 
-	err:= (*e.EnemyBaseLevelFailDal).Add(&m)
-	if err != nil {
-		(*e.Log).SendErrorLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData_Add",
-			m.ClientId, m.ProjectId, err.Error())
+	if err:= (*e.EnemyBaseLevelFailDal).Add(&m); err != nil {
+		(*e.Log).SendErrorLog("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
+			"EnemyBaseLevelFailDal_Add", err.Error())
 
 		return  false, err.Error()
 	}

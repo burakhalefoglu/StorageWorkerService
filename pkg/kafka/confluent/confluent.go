@@ -15,11 +15,11 @@ func ConfluentKafkaConstructor(log *logger.ILog) *confluentKafka {
 	return &confluentKafka{Log: log}
 }
 
-func (k *confluentKafka) Produce(key *[]byte, value *[]byte, topic string) (err error) {
+func (k *confluentKafka) Produce(key *[]byte, value *[]byte, topic string) error {
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": os.Getenv("KAFKA_BROKER")})
 	if err != nil {
-		//k.Log.SendPanicLog("ConfluentKafka", "Produce Connection Failed: ", err.Error())
+		(*k.Log).SendPanicLog("ConfluentKafka", "Produce Connection Failed: ", err.Error())
 		panic(err)
 	}
 	pErr := p.Produce(&kafka.Message{

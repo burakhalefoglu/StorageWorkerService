@@ -22,20 +22,18 @@ func OfferBehaviorManagerConstructor() *offerBehaviorManager {
 
 func (o *offerBehaviorManager)AddOfferBehaviorData(data *[]byte)(success bool,message string){
 	m := model.OfferBehaviorModel{}
-	parseErr := (*o.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*o.Parser).DecodeJson(data, &m); err != nil {
 		(*o.Log).SendErrorLog("OfferBehaviorManager", "AddOfferBehaviorData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to OfferBehaviorModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*o.Log).SendInfoLog("OfferBehaviorManager", "AddOfferBehaviorData",
 		m.ClientId, m.ProjectId)
 
-	err:= (*o.OfferBehaviorDal).Add(&m)
-	if err != nil {
+	if err:= (*o.OfferBehaviorDal).Add(&m); err != nil {
 		(*o.Log).SendErrorLog("OfferBehaviorManager", "AddOfferBehaviorData_Add",
-			m.ClientId, m.ProjectId, err.Error())
+			"OfferBehaviorDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

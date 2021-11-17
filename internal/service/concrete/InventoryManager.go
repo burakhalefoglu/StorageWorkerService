@@ -23,20 +23,18 @@ func InventoryManagerConstructor() *inventoryManager {
 func (i *inventoryManager)AddInventoryData(data *[]byte)(success bool,message string){
 
 	m := model.InventoryModel{}
-	parseErr := (*i.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*i.Parser).DecodeJson(data, &m); err != nil {
 		(*i.Log).SendErrorLog("InventoryManager", "AddInventoryData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to InventoryModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*i.Log).SendInfoLog("InventoryManager", "AddInventoryData",
 		m.ClientId, m.ProjectId)
 
-	err:=(*i.InventoryDal).Add(&m)
-	if err != nil {
-		(*i.Log).SendErrorLog("InventoryManager", "InventoryManager_Add",
-			m.ClientId, m.ProjectId, err.Error())
+	if err:=(*i.InventoryDal).Add(&m); err != nil {
+		(*i.Log).SendErrorLog("InventoryManager", "AddInventoryData",
+			"InventoryDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

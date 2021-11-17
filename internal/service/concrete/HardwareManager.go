@@ -25,20 +25,18 @@ func HardwareManagerConstructor() *hardwareManager {
 func (hrd *hardwareManager)AddHardwareData(data *[]byte)(success bool,message string){
 
 	hardwareModel := model.HardwareModel{}
-	parseErr := (*hrd.Parser).DecodeJson(data, &hardwareModel)
-	if parseErr != nil {
+	if err := (*hrd.Parser).DecodeJson(data, &hardwareModel); err != nil {
 		(*hrd.Log).SendErrorLog("HardwareManager", "AddHardwareData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to HardwareModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*hrd.Log).SendInfoLog("HardwareManager", "AddHardwareData",
 		hardwareModel.ClientId, hardwareModel.ProjectId)
 
-	err:= (*hrd.HardwareDal).Add(&hardwareModel)
-	if err != nil {
-		(*hrd.Log).SendErrorLog("HardwareManager", "AddHardwareData_Add",
-			hardwareModel.ClientId, hardwareModel.ProjectId, err.Error())
+	if err:= (*hrd.HardwareDal).Add(&hardwareModel); err != nil {
+		(*hrd.Log).SendErrorLog("HardwareManager", "AddHardwareData",
+			"HardwareDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

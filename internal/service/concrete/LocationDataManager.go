@@ -23,20 +23,18 @@ func LocationManagerConstructor() *locationManager {
 
 func (loc *locationManager)AddLocationData(data *[]byte)(success bool,message string){
 	locationModel := model.LocationModel{}
-	parseErr := (*loc.Parser).DecodeJson(data, &locationModel)
-	if parseErr != nil {
+	if err := (*loc.Parser).DecodeJson(data, &locationModel); err != nil {
 		(*loc.Log).SendErrorLog("locationManager", "AddLocationData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to LocationModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*loc.Log).SendInfoLog("locationManager", "AddLocationData",
 		locationModel.ClientId, locationModel.ProjectId)
 
-	err:= (*loc.LocationDal).Add(&locationModel)
-	if err != nil {
-		(*loc.Log).SendErrorLog("locationManager", "AddLocationData_Add",
-			locationModel.ClientId, locationModel.ProjectId, err.Error())
+	if err := (*loc.LocationDal).Add(&locationModel); err != nil {
+		(*loc.Log).SendErrorLog("locationManager", "AddLocationData",
+			"LocationDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

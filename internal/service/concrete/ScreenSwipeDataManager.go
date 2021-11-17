@@ -23,20 +23,18 @@ func ScreenSwipeManagerConstructor() *screenSwipeManager {
 func (scr *screenSwipeManager)AddScreenSwipeData(data *[]byte)(success bool,message string){
 
 	screenSwipeData := model.ScreenSwipeModel{}
-	parseErr := (*scr.Parser).DecodeJson(data, &screenSwipeData)
-	if parseErr != nil {
+	if err := (*scr.Parser).DecodeJson(data, &screenSwipeData); err != nil {
 		(*scr.Log).SendErrorLog("ScreenSwipeManager", "AddScreenSwipeData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to ScreenSwipeModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*scr.Log).SendInfoLog("ScreenSwipeManager", "AddScreenSwipeData",
 		screenSwipeData.ClientId, screenSwipeData.ProjectId)
 
-	err:= (*scr.ScreenSwipeDal).Add(&screenSwipeData)
-	if err != nil {
-		(*scr.Log).SendErrorLog("ScreenSwipeManager", "AddScreenSwipeData_Add",
-			screenSwipeData.ClientId, screenSwipeData.ProjectId, err.Error())
+	if err:= (*scr.ScreenSwipeDal).Add(&screenSwipeData); err != nil {
+		(*scr.Log).SendErrorLog("ScreenSwipeManager", "AddScreenSwipeData",
+			"ScreenSwipeDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""

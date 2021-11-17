@@ -23,20 +23,18 @@ func GameSessionManagerConstructor() *gameSessionManager {
 func (g *gameSessionManager)AddGameSessionData(data *[]byte)(success bool,message string){
 
 	m := model.GameSessionModel{}
-	parseErr := (*g.Parser).DecodeJson(data, &m)
-	if parseErr != nil {
+	if err := (*g.Parser).DecodeJson(data, &m); err != nil {
 		(*g.Log).SendErrorLog("GameSessionManager", "AddGameSessionData",
-			"DecodeJson Error", parseErr.Error())
-		return false, parseErr.Error()
+			"byte array to GameSessionModel", "Json Parser Decode Err: ", err.Error())
+		return false, err.Error()
 	}
 
 	defer (*g.Log).SendInfoLog("GameSessionManager", "AddGameSessionData",
 		m.ClientId, m.ProjectId)
 
-	err:= (*g.GameSessionDal).Add(&m)
-	if err != nil {
-		(*g.Log).SendErrorLog("GameSessionManager", "GameSessionManager_Add",
-			m.ClientId, m.ProjectId, err.Error())
+	if err:= (*g.GameSessionDal).Add(&m); err != nil {
+		(*g.Log).SendErrorLog("GameSessionManager", "AddGameSessionData",
+			"GameSessionDal_Add", err.Error())
 		return  false, err.Error()
 	}
 	return  true, ""
