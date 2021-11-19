@@ -24,10 +24,10 @@ func InjectionConstructor() *golobbyInjection {
 }
 
 func (i *golobbyInjection) Inject(){
-	injectCache()
-	injectLogger()
+	injectLogger() // Logger is everywhere, so is must be top
 	injectKafka()
 	injectJsonParser()
+	injectCache()
 
 	injectAdvEvent()
 	injectClient()

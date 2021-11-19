@@ -1,7 +1,7 @@
 package mongodb
 
 import (
-	"StorageWorkerService/pkg/logger"
+	"StorageWorkerService/internal/IoC"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -9,7 +9,8 @@ import (
 	"time"
 )
 
-func GetMongodbClient(log *logger.ILog) *mongo.Client {
+func GetMongodbClient() *mongo.Client {
+	var log = &IoC.Logger
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var url = os.Getenv("MONGODB_CONN")
