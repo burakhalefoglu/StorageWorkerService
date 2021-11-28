@@ -7,10 +7,13 @@ import (
 	"StorageWorkerService/internal/controller/kafka"
 	"github.com/joho/godotenv"
 	"log"
+	"runtime"
 	"sync"
 )
 
 func main() {
+	runtime.MemProfileRate = 0
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")

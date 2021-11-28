@@ -382,7 +382,7 @@ func injectJsonParser() {
 }
 
 func injectKafka() {
-	if err :=container.Transient(func() kafka.IKafka {
+	if err :=container.Singleton(func() kafka.iKafka {
 		return kafkago.KafkaGoConstructor(&IoC.Logger)
 	}); err != nil{
 		panic(err)
@@ -393,7 +393,7 @@ func injectKafka() {
 }
 
 func injectLogger() {
-	if err := container.Transient(func() logger.ILog {
+	if err := container.Singleton(func() logger.ILog {
 		return logrus_logstash_hook.LogrusToLogstashLOGConstructor()
 	}); err != nil{
 		panic(err)
@@ -404,7 +404,7 @@ func injectLogger() {
 }
 
 func injectCache() {
-	if err := container.Transient(func() cache.ICache {
+	if err := container.Singleton(func() cache.ICache {
 		return rediscachev8.RedisCacheConstructor(&IoC.Logger)
 	}); err != nil{
 		panic(err)

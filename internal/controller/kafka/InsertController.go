@@ -46,17 +46,17 @@ func InsertControllerConstructor() *insertController {
 }
 
 func (controller *insertController) StartListen(waitGroup *sync.WaitGroup) {
-	waitGroup.Add(14)
+	waitGroup.Add(15)
 
 	go (*controller.Kafka).Consume("AdvEventDataModel",
 		"AdvEventDataModel_ConsumerGroup",
 		waitGroup,
 		(*controller.AdvEventService).AddAdvEventData)
 
-	//go 	controller.Kafka.Consume("BuyingEventDataModel",
-	//	"BuyingEventDataModel_ConsumerGroup",
-	//	waitGroup,
-	//	controller.AdvBuyingService.AddBuyingEventData)
+	go 	(*controller.Kafka).Consume("BuyingEventDataModel",
+		"BuyingEventDataModel_ConsumerGroup",
+		waitGroup,
+		(*controller.AdvBuyingService).AddBuyingEventData)
 
 	go 	(*controller.Kafka).Consume("HardwareInformationModel",
 		"HardwareInformationModel_ConsumerGroup",

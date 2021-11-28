@@ -32,5 +32,10 @@ COPY --from=builder /go/src/app/main /
 
 COPY .env /
 
+ENV MONGODB_CONN=mongodb://mongodb:27017
+ENV REDIS_CONN=redis-cache:6379
+ENV KAFKA_BROKER=kafka:9092
+ENV LOGSTASH_HOST=elk-stack-for-test-logstash:5000
+
 # run it!
 CMD ["./main"]
