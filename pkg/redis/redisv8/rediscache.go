@@ -1,12 +1,12 @@
 package rediscachev8
 
 import (
+	"StorageWorkerService/pkg/helper"
 	"StorageWorkerService/pkg/logger"
 	"context"
 	"github.com/go-redis/redis/v8"
 	"os"
 )
-
 
 type redisCache struct {
 	Client *redis.Client
@@ -16,11 +16,11 @@ func RedisCacheConstructor(log *logger.ILog) *redisCache {
 	return &redisCache{Client: getClient(log)}
 }
 
-func getClient(log *logger.ILog) *redis.Client{
+func getClient(log *logger.ILog) *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_CONN"),
+		Addr:     helper.ResolvePath("REDIS_HOST", "REDIS_PORT"),
 		Password: os.Getenv("REDIS_PASS"), // no password set
-		DB:       0,  // use default DB
+		DB:       0,                       // use default DB
 	})
 	func(log *logger.ILog) {
 		_, err := client.Ping(context.Background()).Result()
@@ -34,7 +34,7 @@ func getClient(log *logger.ILog) *redis.Client{
 
 func (r *redisCache) Get(key string) (map[string]string, error) {
 
-	result := r.Client.HGetAll(context.Background(),key)
+	result := r.Client.HGetAll(context.Background(), key)
 	if result.Err() != nil {
 		return nil, result.Err()
 	}
@@ -42,7 +42,7 @@ func (r *redisCache) Get(key string) (map[string]string, error) {
 }
 
 func (r *redisCache) Add(key string, value map[string]interface{}) (success bool, err error) {
-	result := r.Client.HMSet(context.Background(),key, value)
+	result := r.Client.HMSet(context.Background(), key, value)
 	if result.Err() != nil {
 		return false, result.Err()
 	}
@@ -50,7 +50,7 @@ func (r *redisCache) Add(key string, value map[string]interface{}) (success bool
 }
 
 func (r *redisCache) Delete(key string, fields ...string) (success bool, err error) {
-	result := r.Client.HDel(context.Background(),key, fields ...)
+	result := r.Client.HDel(context.Background(), key, fields...)
 	if result.Err() != nil {
 		return false, result.Err()
 	}
@@ -58,7 +58,7 @@ func (r *redisCache) Delete(key string, fields ...string) (success bool, err err
 }
 
 func (r *redisCache) DeleteAll(key string) (success bool, err error) {
-	result := r.Client.Del(context.Background(),key)
+	result := r.Client.Del(context.Background(), key)
 	if result.Err() != nil {
 		return false, result.Err()
 	}
