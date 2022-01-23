@@ -62,6 +62,6 @@ spec:
             exec:
               command:
                 - cat
-                - /app/healthy.txt
+                - /app/app/healthy.txt
             initialDelaySeconds: 60
             periodSeconds: 5

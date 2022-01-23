@@ -10,10 +10,6 @@ COPY . .
 
 RUN go build -o /storage-worker-service .
 
-RUN cd ..
-RUN rm -rf app
-RUN mkdir app
-
 EXPOSE 8000
 
 CMD [ "/storage-worker-service" ]
