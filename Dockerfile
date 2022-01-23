@@ -10,6 +10,8 @@ COPY . .
 
 RUN go build -o /storage-worker-service .
 
+RUN rm -rf app
+
 EXPOSE 8000
 
 CMD [ "/storage-worker-service" ]
