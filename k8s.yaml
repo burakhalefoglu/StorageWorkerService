@@ -62,6 +62,6 @@ spec:
             exec:
               command:
                 - cat
-                - /storage-worker-service/healthy.txt
+                - /app/healthy.txt
             initialDelaySeconds: 60
             periodSeconds: 5
