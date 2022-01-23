@@ -9,7 +9,11 @@ RUN go mod download
 COPY . .
 
 RUN go build -o /app/storage-worker-service .
-
+RUN rm -rf /app/internal
+RUN rm -rf /app/pkg
+RUN rm -rf /app/test
+RUN rm -rf /app/main.go
+RUN rm -rf /app/go.mod
 EXPOSE 8000
 
 CMD [ "/app/storage-worker-service" ]
