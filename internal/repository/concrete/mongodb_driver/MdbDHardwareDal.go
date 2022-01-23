@@ -17,12 +17,12 @@ func MDbDHardwareDalConstructor() *mDbDHardwareDal {
 	return &mDbDHardwareDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDHardwareDal) Add(data *model.HardwareModel) error{
+func (m *mDbDHardwareDal) Add(data *model.HardwareModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("Hardware")
+	collection := m.Client.Database("ClientDatabase").Collection("hardwares")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -40,8 +40,6 @@ func (m *mDbDHardwareDal) Add(data *model.HardwareModel) error{
 		{"ProcessorCount", data.ProcessorCount},
 		{"SystemMemorySize", data.SystemMemorySize},
 		{"ProcessorType", data.ProcessorType},
-
-
 	})
 	if err != nil {
 		return err

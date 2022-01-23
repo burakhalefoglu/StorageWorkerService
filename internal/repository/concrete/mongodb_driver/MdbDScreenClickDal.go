@@ -17,12 +17,12 @@ func MDbDScreenClickDalConstructor() *mDbDScreenClickDal {
 	return &mDbDScreenClickDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDScreenClickDal) Add(data *model.ScreenClickModel) error{
+func (m *mDbDScreenClickDal) Add(data *model.ScreenClickModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ScreenClick")
+	collection := m.Client.Database("ClientDatabase").Collection("screenClicks")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},

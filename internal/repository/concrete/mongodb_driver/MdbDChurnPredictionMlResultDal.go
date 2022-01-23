@@ -14,16 +14,15 @@ type mDbDChurnPredictionMlResultDal struct {
 }
 
 func MDbDChurnPredictionMlResultDalConstructor() *mDbDChurnPredictionMlResultDal {
-	return &mDbDChurnPredictionMlResultDal{Client: mongodb.GetMongodbClient() }
+	return &mDbDChurnPredictionMlResultDal{Client: mongodb.GetMongodbClient()}
 }
 
-
-func (m *mDbDChurnPredictionMlResultDal) Add(data *model.ChurnPredictionMlResultModel) error{
+func (m *mDbDChurnPredictionMlResultDal) Add(data *model.ChurnPredictionMlResultModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ChurnPrediction")
+	collection := m.Client.Database("ClientDatabase").Collection("churnPredictions")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -31,7 +30,6 @@ func (m *mDbDChurnPredictionMlResultDal) Add(data *model.ChurnPredictionMlResult
 		{"ModelType", data.ModelType},
 		{"ModelResult", data.ModelResult},
 		{"DateTime", data.DateTime},
-
 	})
 	if err != nil {
 		return err

@@ -17,12 +17,12 @@ func MDbDOfferBehaviorDalConstructor() *mDbDOfferBehaviorDal {
 	return &mDbDOfferBehaviorDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error{
+func (m *mDbDOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("OfferBehavior")
+	collection := m.Client.Database("ClientDatabase").Collection("offerBehaviors")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -30,7 +30,6 @@ func (m *mDbDOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error{
 		{"DateTime", data.DateTime},
 		{"OfferId", data.OfferId},
 		{"IsBuyOffer", data.IsBuyOffer},
-
 	})
 	if err != nil {
 		return err

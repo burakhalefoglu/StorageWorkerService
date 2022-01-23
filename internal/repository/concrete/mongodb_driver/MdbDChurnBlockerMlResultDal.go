@@ -17,12 +17,12 @@ func MDbDChurnBlockerMlResultDalConstructor() *mDbDChurnBlockerMlResultDal {
 	return &mDbDChurnBlockerMlResultDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel) error{
+func (m *mDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ChurnBlockerMlResult")
+	collection := m.Client.Database("ClientDatabase").Collection("churnBlockerMlResults")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -30,7 +30,6 @@ func (m *mDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel)
 		{"ModelType", data.ModelType},
 		{"ModelResult", data.ModelResult},
 		{"DateTime", data.DateTime},
-
 	})
 	if err != nil {
 		return err

@@ -17,12 +17,12 @@ func MDbDScreenSwipeDalConstructor() *mDbDScreenSwipeDal {
 	return &mDbDScreenSwipeDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDScreenSwipeDal) Add(data *model.ScreenSwipeModel) error{
+func (m *mDbDScreenSwipeDal) Add(data *model.ScreenSwipeModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ScreenSwipe")
+	collection := m.Client.Database("ClientDatabase").Collection("screenSwipes")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},

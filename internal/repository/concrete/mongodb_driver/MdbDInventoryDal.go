@@ -17,12 +17,12 @@ func MDbDInventoryDalConstructor() *mDbDInventoryDal {
 	return &mDbDInventoryDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDInventoryDal) Add(data *model.InventoryModel) error{
+func (m *mDbDInventoryDal) Add(data *model.InventoryModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("Inventory")
+	collection := m.Client.Database("ClientDatabase").Collection("inventories")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -34,7 +34,6 @@ func (m *mDbDInventoryDal) Add(data *model.InventoryModel) error{
 		{"CustomerId", data.Skills},
 		{"CustomerId", data.TemporaryAbilities},
 		{"CustomerId", data.CreatedAt},
-
 	})
 	if err != nil {
 		return err

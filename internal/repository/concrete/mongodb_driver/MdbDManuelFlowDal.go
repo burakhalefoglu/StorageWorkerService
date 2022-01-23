@@ -17,19 +17,18 @@ func MDbDManuelFlowDalConstructor() *mDbDManuelFlowDal {
 	return &mDbDManuelFlowDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDManuelFlowDal) Add(data *model.ManuelFlowModel) error{
+func (m *mDbDManuelFlowDal) Add(data *model.ManuelFlowModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ManuelFlow")
+	collection := m.Client.Database("ClientDatabase").Collection("manuelFlows")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
 		{"DifficultyLevel", data.DifficultyLevel},
 		{"DateTime", data.DateTime},
-
 	})
 	if err != nil {
 		return err

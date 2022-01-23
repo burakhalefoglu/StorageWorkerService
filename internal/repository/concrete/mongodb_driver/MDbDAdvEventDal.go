@@ -12,19 +12,19 @@ import (
 
 type mDbDAdvEventDal struct {
 	Client *mongo.Client
-	Logger   *logger.ILog
+	Logger *logger.ILog
 }
 
 func MDbDAdvEventDalConstructor() *mDbDAdvEventDal {
 	return &mDbDAdvEventDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDAdvEventDal) Add(data *model.AdvEventDataModel) error{
+func (m *mDbDAdvEventDal) Add(data *model.AdvEventDataModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("AdvEvent")
+	collection := m.Client.Database("ClientDatabase").Collection("advEvents")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"AdvType", data.AdvType},
 		{"ProjectId", data.ProjectId},
@@ -34,7 +34,7 @@ func (m *mDbDAdvEventDal) Add(data *model.AdvEventDataModel) error{
 		{"LevelIndex", data.LevelIndex},
 		{"LevelName", data.LevelName},
 		{"TriggeredTime", data.TriggeredTime},
-		})
+	})
 	if err != nil {
 		return err
 	}

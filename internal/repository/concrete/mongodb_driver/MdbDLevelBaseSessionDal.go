@@ -17,12 +17,12 @@ func MDbDLevelBaseSessionDalConstructor() *mDbDLevelBaseSessionDal {
 	return &mDbDLevelBaseSessionDal{Client: mongodb.GetMongodbClient()}
 }
 
-func (m *mDbDLevelBaseSessionDal) Add(data *model.LevelBaseSessionModel) error{
+func (m *mDbDLevelBaseSessionDal) Add(data *model.LevelBaseSessionModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("LevelBaseSession")
+	collection := m.Client.Database("ClientDatabase").Collection("levelBaseSessions")
 	var _, err = collection.InsertOne(ctx, bson.D{
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
@@ -32,7 +32,6 @@ func (m *mDbDLevelBaseSessionDal) Add(data *model.LevelBaseSessionModel) error{
 		{"SessionTimeMinute", data.SessionTimeMinute},
 		{"SessionStartTime", data.SessionStartTime},
 		{"SessionFinishTime", data.SessionFinishTime},
-
 	})
 	if err != nil {
 		return err
