@@ -8,8 +8,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o /storage-worker-service .
+RUN go build -o /app/storage-worker-service .
 
 EXPOSE 8000
 
-CMD [ "/storage-worker-service" ]
+CMD [ "/app/storage-worker-service" ]

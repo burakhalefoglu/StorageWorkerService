@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var path = "app/healthy.txt"
+var path = "healthy.txt"
 
 func ResolvePath(host string, port string) string {
 	h := os.Getenv(host)
