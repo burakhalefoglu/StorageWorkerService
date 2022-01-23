@@ -59,13 +59,14 @@ spec:
                   name: app-secret
                   key: mongodb-root-password
           args:
-            - /bin/sh
+            - /bin/bash
             - -c
-            - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+            - /home/test/check.sh; sleep 20
           livenessProbe:
             exec:
               command:
-                - cat
-                - /tmp/healthy
-            initialDelaySeconds: 5
+                - /bin/sh
+                - -c
+                - /home/test/check.sh
+            initialDelaySeconds: 10
             periodSeconds: 5
