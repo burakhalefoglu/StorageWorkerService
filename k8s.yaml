@@ -20,7 +20,7 @@ spec:
         app: storage-worker
     spec:
       nodeSelector:
-        dedicated: deamond
+        dedicated: spot
       containers:
         - name: storage-worker
           image: CONTAINER_IMAGE
