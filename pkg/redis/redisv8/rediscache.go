@@ -2,9 +2,9 @@ package rediscachev8
 
 import (
 	"StorageWorkerService/pkg/helper"
-	"StorageWorkerService/pkg/logger"
 	"context"
 	"github.com/go-redis/redis/v8"
+	"log"
 	"os"
 )
 
@@ -12,22 +12,22 @@ type redisCache struct {
 	Client *redis.Client
 }
 
-func RedisCacheConstructor(log *logger.ILog) *redisCache {
-	return &redisCache{Client: getClient(log)}
+func RedisCacheConstructor() *redisCache {
+	return &redisCache{Client: getClient()}
 }
 
-func getClient(log *logger.ILog) *redis.Client {
+func getClient() *redis.Client {
 	client := redis.NewClient(&redis.Options{
 		Addr:     helper.ResolvePath("REDIS_HOST", "REDIS_PORT"),
 		Password: os.Getenv("REDIS_PASS"), // no password set
 		DB:       0,                       // use default DB
 	})
-	func(log *logger.ILog) {
+	func() {
 		_, err := client.Ping(context.Background()).Result()
 		if err != nil {
-			(*log).SendPanicLog("RedisConnection", "ConnectRedis", err)
+			log.Fatal("RedisConnection", "ConnectRedis", err)
 		}
-	}(log)
+	}()
 
 	return client
 }

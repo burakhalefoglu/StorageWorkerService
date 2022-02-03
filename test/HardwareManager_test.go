@@ -5,7 +5,6 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
-	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -17,11 +16,9 @@ func Test_Hardware_SuccessIsTrue(t *testing.T) {
 	//Arrange
 	var testHardwareDal = new(repository.MockHardwareDal)
 	var json = gojson.GoJsonConstructor()
-	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
 	IoC.HardwareDal = testHardwareDal
-	IoC.Logger = testLog
 
 	hardware := concrete.HardwareManagerConstructor()
 
@@ -44,11 +41,9 @@ func Test_Hardware_SuccessIsFalse(t *testing.T) {
 	//Arrange
 	var testHardwareDal = new(repository.MockHardwareDal)
 	var json = gojson.GoJsonConstructor()
-	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
 	IoC.HardwareDal = testHardwareDal
-	IoC.Logger = testLog
 
 	hardware := concrete.HardwareManagerConstructor()
 	

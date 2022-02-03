@@ -5,35 +5,33 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"StorageWorkerService/pkg/logger"
+	"log"
 )
 
 type clientManager struct {
 	Parser *JsonParser.IJsonParser
 	ClientDal *abstract.IClientDal
-	Log *logger.ILog
 }
 
 func ClientManagerConstructor() *clientManager {
 	return &clientManager{Parser: &IoC.JsonParser,
-		ClientDal: &IoC.ClientDal,
-		Log: &IoC.Logger}
+		ClientDal: &IoC.ClientDal}
 }
 
 func (c *clientManager)AddClient(data *[]byte)(success bool,message string){
 
 	client := model.ClientDataModel{}
 	if err := (*c.Parser).DecodeJson(data, &client); err != nil {
-		(*c.Log).SendErrorLog("ClientManager", "AddClient",
+		log.Fatal("ClientManager", "AddClient",
 			"byte array to ClientDataModel", "Json Parser Decode Err: ", err.Error())
 		return false, err.Error()
 	}
 
-	defer (*c.Log).SendInfoLog("ClientManager", "AddClient",
+	defer log.Print("ClientManager", "AddClient",
 		client.ClientId, client.ProjectId)
 
 	if err:= (*c.ClientDal).Add(&client); err != nil {
-		(*c.Log).SendErrorLog("ClientManager", "AddClient",
+		log.Fatal("ClientManager", "AddClient",
 			"ClientDal_Add", err.Error())
 		return  false, err.Error()
 	}
@@ -42,11 +40,11 @@ func (c *clientManager)AddClient(data *[]byte)(success bool,message string){
 
 func (c *clientManager)UpdateByClientId(clientId string, data *model.ClientDataModel)(success bool,message string){
 
-	defer (*c.Log).SendInfoLog("ClientManager", "UpdateByClientId",
+	defer log.Print("ClientManager", "UpdateByClientId",
 		clientId, data.ProjectId)
 
 	if err:= (*c.ClientDal).UpdateById(clientId, data); err != nil {
-		(*c.Log).SendErrorLog("ClientManager", "UpdateByClientId",
+		log.Fatal("ClientManager", "UpdateByClientId",
 			"ClientDal_UpdateById", err.Error())
 		return  false, err.Error()
 	}
@@ -56,11 +54,11 @@ func (c *clientManager)UpdateByClientId(clientId string, data *model.ClientDataM
 
 func (c *clientManager) GetByClientId (clientId string)(data *model.ClientDataModel, success bool,message string){
 
-	defer (*c.Log).SendInfoLog("ClientManager", "GetByClientId", clientId)
+	defer log.Print("ClientManager", "GetByClientId", clientId)
 
 	var client, err = (*c.ClientDal).GetById(clientId)
 	if err != nil {
-		(*c.Log).SendErrorLog("ClientManager", "GetByClientId",
+		log.Fatal("ClientManager", "GetByClientId",
 			"ClientDal_GetById", err.Error())
 	return nil, false, err.Error()
 	}

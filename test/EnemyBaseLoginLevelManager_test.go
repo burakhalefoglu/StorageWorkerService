@@ -5,7 +5,6 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
-	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
 	"github.com/stretchr/testify/assert"
@@ -17,11 +16,9 @@ func Test_EnemyBaseLoginLevel_SuccessIsTrue(t *testing.T) {
 	//Arrange
 	var testEnemyBaseLoginDal = new(repository.MockEnemyBaseLoginLevelDal)
 	var json = gojson.GoJsonConstructor()
-	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
 	IoC.EnemyBaseLoginLevelDal = testEnemyBaseLoginDal
-	IoC.Logger = testLog
 
 	enemyBaseLoginLevel := concrete.EnemyBaseLoginLevelManagerConstructor()
 
@@ -44,11 +41,9 @@ func Test_EnemyBaseLoginLevel_SuccessIsFalse(t *testing.T) {
 	//Arrange
 	var testEnemyBaseLoginDal = new(repository.MockEnemyBaseLoginLevelDal)
 	var json = gojson.GoJsonConstructor()
-	var testLog = new(Log.MockLogger)
 
 	IoC.JsonParser = json
 	IoC.EnemyBaseLoginLevelDal = testEnemyBaseLoginDal
-	IoC.Logger = testLog
 
 	enemyBaseLoginLevel := concrete.EnemyBaseLoginLevelManagerConstructor()
 

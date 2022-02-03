@@ -5,35 +5,33 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"StorageWorkerService/pkg/logger"
+	"log"
 )
 
 type churnBlockerMlResultManager struct {
 	Parser *JsonParser.IJsonParser
 	ChurnBlockerMlResultDal *abstract.IChurnBlockerMlResultDal
-	Log *logger.ILog
 }
 
 func ChurnBlockerMlResultManagerConstructor() *churnBlockerMlResultManager {
 	return &churnBlockerMlResultManager{Parser: &IoC.JsonParser,
-		ChurnBlockerMlResultDal: &IoC.ChurnBlockerMlResultDal,
-		Log: &IoC.Logger}
+		ChurnBlockerMlResultDal: &IoC.ChurnBlockerMlResultDal}
 }
 
 func (c *churnBlockerMlResultManager)AddChurnBlockerMlResultData(data *[]byte)(success bool,message string){
 
 	churnBlockerModel := model.ChurnBlockerMlResultModel{}
 	if err := (*c.Parser).DecodeJson(data, &churnBlockerModel); err != nil {
-		(*c.Log).SendErrorLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
+		log.Fatal("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
 			"byte array to ChurnBlockerMlResultModel", "Json Parser Decode Err: ", err.Error())
 		return false, err.Error()
 	}
 
-	defer (*c.Log).SendInfoLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
+	defer log.Print("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
 		churnBlockerModel.ClientId, churnBlockerModel.ProjectId)
 
 	if err := (*c.ChurnBlockerMlResultDal).Add(&churnBlockerModel); err != nil {
-		(*c.Log).SendErrorLog("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
+		log.Fatal("churnBlockerMlResultManager", "AddChurnBlockerMlResultData",
 			"ChurnBlockerMlResultDal_Add", err.Error())
 		return  false, err.Error()
 	}

@@ -5,7 +5,6 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/service/concrete"
 	"StorageWorkerService/pkg/jsonParser/gojson"
-	"StorageWorkerService/test/Mocks/Log"
 	"StorageWorkerService/test/Mocks/repository"
 	"StorageWorkerService/test/Mocks/service"
 	"github.com/stretchr/testify/assert"
@@ -18,13 +17,11 @@ func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var testLog = new(Log.MockLogger)
 	var json = gojson.GoJsonConstructor()
 
 	IoC.JsonParser = json
 	IoC.BuyingEventDal = testBuyingEventDal
 	IoC.ClientService = testClientService
-	IoC.Logger = testLog
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
@@ -69,13 +66,11 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var testLog = new(Log.MockLogger)
 	var json = gojson.GoJsonConstructor()
 
 	IoC.JsonParser = json
 	IoC.BuyingEventDal = testBuyingEventDal
 	IoC.ClientService = testClientService
-	IoC.Logger = testLog
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
@@ -121,13 +116,11 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 	//Arrange
 	var testBuyingEventDal = new(repository.MockBuyingEventDal)
 	var testClientService = new(service.MockClientService)
-	var testLog = new(Log.MockLogger)
 	var json = gojson.GoJsonConstructor()
 
 	IoC.JsonParser = json
 	IoC.BuyingEventDal = testBuyingEventDal
 	IoC.ClientService = testClientService
-	IoC.Logger = testLog
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 

@@ -5,7 +5,6 @@ import (
 	service "StorageWorkerService/internal/service/abstract"
 	jsonParser "StorageWorkerService/pkg/jsonParser"
 	"StorageWorkerService/pkg/kafka"
-	"StorageWorkerService/pkg/logger"
 	cache "StorageWorkerService/pkg/redis"
 )
 
@@ -18,7 +17,6 @@ func InjectContainers(container IContainer){
 }
 
 var RedisCache cache.ICache
-var Logger logger.ILog
 var Kafka kafka.IKafka
 var JsonParser jsonParser.IJsonParser
 

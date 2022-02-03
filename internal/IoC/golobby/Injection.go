@@ -10,8 +10,6 @@ import (
 	"StorageWorkerService/pkg/jsonParser/gojson"
 	"StorageWorkerService/pkg/kafka"
 	"StorageWorkerService/pkg/kafka/kafkago"
-	"StorageWorkerService/pkg/logger"
-	"StorageWorkerService/pkg/logger/logrus_logstash_hook"
 	"StorageWorkerService/pkg/redis"
 	"StorageWorkerService/pkg/redis/redisv8"
 )
@@ -24,7 +22,6 @@ func InjectionConstructor() *golobbyInjection {
 }
 
 func (i *golobbyInjection) Inject() {
-	injectLogger() // Logger is everywhere, so is must be top
 	injectKafka()
 	injectJsonParser()
 	injectCache()
@@ -383,7 +380,7 @@ func injectJsonParser() {
 
 func injectKafka() {
 	if err := container.Singleton(func() kafka.IKafka {
-		return kafkago.KafkaGoConstructor(&IoC.Logger)
+		return kafkago.KafkaGoConstructor()
 	}); err != nil {
 		panic(err)
 	}
@@ -392,20 +389,9 @@ func injectKafka() {
 	}
 }
 
-func injectLogger() {
-	if err := container.Singleton(func() logger.ILog {
-		return logrus_logstash_hook.LogrusToLogstashLOGConstructor()
-	}); err != nil {
-		panic(err)
-	}
-	if err := container.Resolve(&IoC.Logger); err != nil {
-		panic(err)
-	}
-}
-
 func injectCache() {
 	if err := container.Singleton(func() cache.ICache {
-		return rediscachev8.RedisCacheConstructor(&IoC.Logger)
+		return rediscachev8.RedisCacheConstructor()
 	}); err != nil {
 		panic(err)
 	}

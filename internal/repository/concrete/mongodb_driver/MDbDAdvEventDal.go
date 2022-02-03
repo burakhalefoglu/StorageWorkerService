@@ -3,7 +3,6 @@ package mongodb_driver
 import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/pkg/database/mongodb"
-	"StorageWorkerService/pkg/logger"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,7 +11,6 @@ import (
 
 type mDbDAdvEventDal struct {
 	Client *mongo.Client
-	Logger *logger.ILog
 }
 
 func MDbDAdvEventDalConstructor() *mDbDAdvEventDal {

@@ -6,20 +6,18 @@ import (
 	abstractRepo "StorageWorkerService/internal/repository/abstract"
 	abstractService "StorageWorkerService/internal/service/abstract"
 	JSonParser "StorageWorkerService/pkg/jsonParser"
-	"StorageWorkerService/pkg/logger"
+	"log"
 )
 
 type buyingEventManager struct {
 	Parser *JSonParser.IJsonParser
 	BuyingEventDal *abstractRepo.IBuyingEventDal
 	ClientService *abstractService.IClientService
-	Log *logger.ILog
-
 }
 
 func BuyingEventManagerConstructor() *buyingEventManager {
 	return &buyingEventManager{Parser: &IoC.JsonParser,
-		BuyingEventDal: &IoC.BuyingEventDal, ClientService: &IoC.ClientService, Log: &IoC.Logger}
+		BuyingEventDal: &IoC.BuyingEventDal, ClientService: &IoC.ClientService}
 }
 
 // AddBuyingEventData ! Transaction is required.
@@ -27,16 +25,16 @@ func (buying *buyingEventManager)AddBuyingEventData(data *[]byte)(success bool,m
 
 	buyingEventModel := model.BuyingEventModel{}
 	if err := (*buying.Parser).DecodeJson(data, &buyingEventModel); err != nil {
-		(*buying.Log).SendErrorLog("BuyingEventManager", "AddAdvEventData",
+		log.Fatal("BuyingEventManager", "AddAdvEventData",
 			"byte array to BuyingEventModel", "Json Parser Decode Err: ", err.Error())
 		return false, err.Error()
 	}
 
-	defer (*buying.Log).SendInfoLog("BuyingEventManager", "AddBuyingEventData",
+	defer log.Print("BuyingEventManager", "AddBuyingEventData",
 		buyingEventModel.ClientId, buyingEventModel.ProjectId)
 
 	if err := (*buying.BuyingEventDal).Add(&buyingEventModel); err != nil {
-		(*buying.Log).SendErrorLog("BuyingEventManager", "AddBuyingEventData",
+		log.Fatal("BuyingEventManager", "AddBuyingEventData",
 			"BuyingEventDal_Add", err.Error())
 		return  false, err.Error()
 	}
