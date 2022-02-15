@@ -9,26 +9,29 @@ import (
 	"time"
 )
 
-type mDbDChurnBlockerMlResultDal struct {
+type mDbManuelFlowDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDChurnBlockerMlResultDalConstructor() *mDbDChurnBlockerMlResultDal {
-	return &mDbDChurnBlockerMlResultDal{Client: mongodb.GetMongodbClient()}
+func NewMDbManuelFlowDal(Table string) *mDbManuelFlowDal {
+	return &mDbManuelFlowDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDChurnBlockerMlResultDal) Add(data *model.ChurnBlockerMlResultModel) error {
+func (m *mDbManuelFlowDal) Add(data *model.ManuelFlowModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("churnBlockerMlResults")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"ModelType", data.ModelType},
-		{"ModelResult", data.ModelResult},
+		{"DifficultyLevel", data.DifficultyLevel},
 		{"DateTime", data.DateTime},
 	})
 	if err != nil {

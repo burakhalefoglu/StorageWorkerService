@@ -1,7 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IChurnPredictionMlResultDal interface{
-	Add(data *model.ChurnPredictionMlResultModel) error
+type IChurnPredictionMlResultDal interface {
+	Add(model *model.ChurnPredictionMlResultModel) error
 }

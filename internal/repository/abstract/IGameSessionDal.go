@@ -1,8 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IGameSessionDal interface{
-	Add(data *model.GameSessionModel) error
+type IGameSessionDal interface {
+	Add(model *model.GameSessionModel) error
 }
-

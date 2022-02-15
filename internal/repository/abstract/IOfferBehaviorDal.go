@@ -1,7 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IOfferBehaviorDal interface{
-	Add(data *model.OfferBehaviorModel) error
+type IOfferBehaviorDal interface {
+	Add(model *model.OfferBehaviorModel) error
 }

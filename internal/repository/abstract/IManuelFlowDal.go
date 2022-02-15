@@ -1,8 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IManuelFlowDal interface{
-	Add(data *model.ManuelFlowModel) error
+type IManuelFlowDal interface {
+	Add(model *model.ManuelFlowModel) error
 }
-

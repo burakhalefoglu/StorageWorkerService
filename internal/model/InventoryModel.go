@@ -2,30 +2,50 @@ package model
 
 import "time"
 
-type InventoryModel struct{
-	ClientId string
-	ProjectId string
-	CustomerId string
-	MinorMine float32
+type InventoryModelDto struct {
+	Id                 int64
+	ClientId           int64
+	ProjectId          int64
+	CustomerId         int64
+	MinorMine          float32
+	ModerateMine       float32
+	PreciousMine       float32
+	Items              []ItemModel
+	Skills             []SkillModel
+	TemporaryAbilities []TemporaryAbilityModel
+	CreatedAt          time.Time
+	Status             bool
+}
+
+type InventoryModel struct {
+	Id           int64
+	ClientId     int64
+	ProjectId    int64
+	CustomerId   int64
+	MinorMine    float32
 	ModerateMine float32
 	PreciousMine float32
-	Items []Item
-	Skills             []Item
-	TemporaryAbilities []Item
-	CreatedAt          time.Time
+	CreatedAt    time.Time
+	Status       bool
 }
 
-type Item struct {
-	ItemType string
-	Count int
+type ItemModel struct {
+	Id          int64
+	InventoryId int64
+	ItemType    string
+	Count       int
 }
 
-type Skill struct {
-	SkillType string
-	Count int
+type SkillModel struct {
+	Id          int64
+	InventoryId int64
+	SkillType   string
+	Count       int
 }
 
-type TemporaryAbility struct{
+type TemporaryAbilityModel struct {
+	Id          int64
+	InventoryId int64
 	AbilityType string
-	Count int
+	Count       int
 }

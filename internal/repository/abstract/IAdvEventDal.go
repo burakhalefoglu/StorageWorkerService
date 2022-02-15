@@ -2,6 +2,6 @@ package abstract
 
 import "StorageWorkerService/internal/model"
 
-type IAdvEventDal interface{
-	Add(data *model.AdvEventDataModel) error
+type IAdvEventDal interface {
+	Add(model *model.AdvEventDataModel) error
 }

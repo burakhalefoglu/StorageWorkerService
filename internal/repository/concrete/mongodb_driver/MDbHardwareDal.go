@@ -9,21 +9,25 @@ import (
 	"time"
 )
 
-type mDbDHardwareDal struct {
+type mDbHardwareDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDHardwareDalConstructor() *mDbDHardwareDal {
-	return &mDbDHardwareDal{Client: mongodb.GetMongodbClient()}
+func NewMDbHardwareDal(Table string) *mDbHardwareDal {
+	return &mDbHardwareDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDHardwareDal) Add(data *model.HardwareModel) error {
+func (m *mDbHardwareDal) Add(data *model.HardwareModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("hardwares")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},

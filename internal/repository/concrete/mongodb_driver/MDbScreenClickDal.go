@@ -9,26 +9,30 @@ import (
 	"time"
 )
 
-type mDbDScreenClickDal struct {
+type mDbScreenClickDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDScreenClickDalConstructor() *mDbDScreenClickDal {
-	return &mDbDScreenClickDal{Client: mongodb.GetMongodbClient()}
+func NewMDbScreenClickDal(Table string) *mDbScreenClickDal {
+	return &mDbScreenClickDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDScreenClickDal) Add(data *model.ScreenClickModel) error {
+func (m *mDbScreenClickDal) Add(data *model.ScreenClickModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("screenClicks")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
 		{"CreatedAt", data.CreatedAt},
-		{"FingerID", data.FingerID},
+		{"FingerID", data.FingerId},
 		{"TabCount", data.TabCount},
 		{"StartLocX", data.StartLocX},
 		{"StartLocY", data.StartLocY},

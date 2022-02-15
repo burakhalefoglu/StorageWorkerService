@@ -9,31 +9,36 @@ import (
 	"time"
 )
 
-type mDbDEnemyBaseLoginLevelDal struct {
+type mDbScreenSwipeDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDEnemyBaseLoginLevelDalConstruct() *mDbDEnemyBaseLoginLevelDal {
-	return &mDbDEnemyBaseLoginLevelDal{Client: mongodb.GetMongodbClient()}
+func NewMDbScreenSwipeDal(Table string) *mDbScreenSwipeDal {
+	return &mDbScreenSwipeDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDEnemyBaseLoginLevelDal) Add(data *model.EnemyBaseLoginLevelModel) error {
+func (m *mDbScreenSwipeDal) Add(data *model.ScreenSwipeModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("enemyBaseLoginLevels")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"DateTime", data.DateTime},
+		{"CreatedAt", data.CreatedAt},
+		{"SwipeDirection", data.SwipeDirection},
+		{"StartLocX", data.StartLocX},
+		{"StartLocY", data.StartLocY},
+		{"FinishLocX", data.FinishLocX},
+		{"FinishLocY", data.FinishLocY},
 		{"LevelName", data.LevelName},
 		{"LevelIndex", data.LevelIndex},
-		{"PlayingTime", data.PlayingTime},
-		{"AverageScores", data.AverageScores},
-		{"IsDead", data.IsDead},
-		{"TotalPowerUsage", data.TotalPowerUsage},
 	})
 	if err != nil {
 		return err

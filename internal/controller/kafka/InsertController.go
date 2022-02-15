@@ -11,7 +11,7 @@ import (
 type insertController struct {
 	Kafka                          *kafka.IKafka
 	AdvEventService                *abstract.IAdvEventService
-	AdvBuyingService               *abstract.IAdvBuyingService
+	AdvBuyingService               *abstract.IBuyingEventService
 	HardwareService                *abstract.IHardwareService
 	LocationService                *abstract.ILocationService
 	ScreenSwipeService             *abstract.IScreenSwipeService

@@ -1,5 +1,5 @@
 package abstract
 
-type IAdvBuyingService interface{
+type IBuyingEventService interface{
 	AddBuyingEventData(data *[]byte)(success bool,message string)
 }

@@ -9,32 +9,33 @@ import (
 	"time"
 )
 
-type mDbDScreenSwipeDal struct {
+type mDbLevelBaseSessionDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDScreenSwipeDalConstructor() *mDbDScreenSwipeDal {
-	return &mDbDScreenSwipeDal{Client: mongodb.GetMongodbClient()}
+func NewMDbLevelBaseSessionDal(Table string) *mDbLevelBaseSessionDal {
+	return &mDbLevelBaseSessionDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDScreenSwipeDal) Add(data *model.ScreenSwipeModel) error {
+func (m *mDbLevelBaseSessionDal) Add(data *model.LevelBaseSessionModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("screenSwipes")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"CreatedAt", data.CreatedAt},
-		{"SwipeDirection", data.SwipeDirection},
-		{"StartLocX", data.StartLocX},
-		{"StartLocY", data.StartLocY},
-		{"FinishLocX", data.FinishLocX},
-		{"FinishLocY", data.FinishLocY},
 		{"LevelName", data.LevelName},
 		{"LevelIndex", data.LevelIndex},
+		{"SessionTimeMinute", data.SessionTimeMinute},
+		{"SessionStartTime", data.SessionStartTime},
+		{"SessionFinishTime", data.SessionFinishTime},
 	})
 	if err != nil {
 		return err

@@ -3,9 +3,10 @@ package golobby
 import (
 	"StorageWorkerService/internal/IoC"
 	repository "StorageWorkerService/internal/repository/abstract"
-	"StorageWorkerService/internal/repository/concrete/mongodb_driver"
+	"StorageWorkerService/internal/repository/concrete/Cassandra"
 	service "StorageWorkerService/internal/service/abstract"
 	manager "StorageWorkerService/internal/service/concrete"
+	cassandra "StorageWorkerService/pkg/database/Cassandra"
 	jsonParser "StorageWorkerService/pkg/jsonParser"
 	"StorageWorkerService/pkg/jsonParser/gojson"
 	"StorageWorkerService/pkg/kafka"
@@ -52,7 +53,7 @@ func injectScreenSwipe() {
 	}
 
 	if err := container.Singleton(func() repository.IScreenSwipeDal {
-		return mongodb_driver.MDbDScreenSwipeDalConstructor()
+		return Cassandra.NewScreenSwipeDal(cassandra.ScreenSwipeModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -73,7 +74,7 @@ func injectScreenClick() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IScreenClickDal {
-		return mongodb_driver.MDbDScreenClickDalConstructor()
+		return Cassandra.NewScreenClickDal(cassandra.ScreenClickModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -93,7 +94,7 @@ func injectOfferBehavior() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IOfferBehaviorDal {
-		return mongodb_driver.MDbDOfferBehaviorDalConstructor()
+		return Cassandra.NewOfferBehaviorDal(cassandra.OfferBehaviorModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -113,7 +114,7 @@ func injectManuelFlow() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IManuelFlowDal {
-		return mongodb_driver.MDbDManuelFlowDalConstructor()
+		return Cassandra.NewManuelFlowDal(cassandra.ManuelFlowModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -133,7 +134,7 @@ func injectLocation() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.ILocationDal {
-		return mongodb_driver.MDbDLocationDalConstructor()
+		return Cassandra.NewLocationDal(cassandra.LocationModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -153,7 +154,7 @@ func injectLevelBaseSession() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.ILevelBaseSessionDal {
-		return mongodb_driver.MDbDLevelBaseSessionDalConstructor()
+		return Cassandra.NewLevelBaseSessionDal(cassandra.LevelBaseSessionModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -167,13 +168,68 @@ func injectLevelBaseSession() {
 }
 
 func injectInventory() {
+
+	if err := container.Singleton(func() service.ITemporaryAbilityService {
+		return manager.NewTemporaryAbilityManager()
+	}); err != nil {
+		panic(err)
+	}
+	if err := container.Singleton(func() repository.ITemporaryAbilityDal {
+		return Cassandra.NewTemporaryAbilityDal(cassandra.TemporaryAbilityModel)
+	}); err != nil {
+		panic(err)
+	}
+
+	if err := container.Resolve(&IoC.TemporaryAbilityService); err != nil {
+		panic(err)
+	}
+	if err := container.Resolve(&IoC.TemporaryAbilityDal); err != nil {
+		panic(err)
+	}
+
+	if err := container.Singleton(func() service.IItemService {
+		return manager.NewItemManager()
+	}); err != nil {
+		panic(err)
+	}
+	if err := container.Singleton(func() repository.IItemDal {
+		return Cassandra.NewItemDal(cassandra.ItemModel)
+	}); err != nil {
+		panic(err)
+	}
+
+	if err := container.Resolve(&IoC.ItemService); err != nil {
+		panic(err)
+	}
+	if err := container.Resolve(&IoC.ItemDal); err != nil {
+		panic(err)
+	}
+
+	if err := container.Singleton(func() service.ISkillService {
+		return manager.NewSkillManager()
+	}); err != nil {
+		panic(err)
+	}
+	if err := container.Singleton(func() repository.ISkillDal {
+		return Cassandra.NewSkillDal(cassandra.SkillModel)
+	}); err != nil {
+		panic(err)
+	}
+
+	if err := container.Resolve(&IoC.SkillService); err != nil {
+		panic(err)
+	}
+	if err := container.Resolve(&IoC.SkillDal); err != nil {
+		panic(err)
+	}
+
 	if err := container.Singleton(func() service.IInventoryService {
-		return manager.InventoryManagerConstructor()
+		return manager.NewInventoryManager()
 	}); err != nil {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IInventoryDal {
-		return mongodb_driver.MDbDInventoryDalConstructor()
+		return Cassandra.NewInventoryDal(cassandra.InventoryModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -193,7 +249,7 @@ func injectHardware() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IHardwareDal {
-		return mongodb_driver.MDbDHardwareDalConstructor()
+		return Cassandra.NewHardwareDal(cassandra.HardwareModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -213,7 +269,7 @@ func injectGameSession() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IGameSessionDal {
-		return mongodb_driver.MDbDGameSessionDalConstructor()
+		return Cassandra.NewGameSessionDal(cassandra.GameSessionModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -233,7 +289,7 @@ func injectEnemyBaseLoginLevel() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IEnemyBaseLoginLevelDal {
-		return mongodb_driver.MDbDEnemyBaseLoginLevelDalConstruct()
+		return Cassandra.NewEnemyBaseLoginLevelDal(cassandra.EnemyBaseLoginLevelModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -253,7 +309,7 @@ func injectEnemyBaseLevelFail() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IEnemyBaseLevelFailDal {
-		return mongodb_driver.MDbDEnemyBaseLevelFailDalConstructor()
+		return Cassandra.NewEnemyBaseLevelFailDal(cassandra.EnemyBaseLevelFailModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -273,7 +329,7 @@ func injectChurnPredictionResult() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IChurnPredictionMlResultDal {
-		return mongodb_driver.MDbDChurnPredictionMlResultDalConstructor()
+		return Cassandra.NewCassChurnPredictionMlResultDal(cassandra.ChurnPredictionMlResultModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -293,7 +349,7 @@ func injectChurnBlockerMlResult() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IChurnBlockerMlResultDal {
-		return mongodb_driver.MDbDChurnBlockerMlResultDalConstructor()
+		return Cassandra.NewCassChurnBlockerMlResultDal(cassandra.ChurnBlockerMlResultModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -307,13 +363,13 @@ func injectChurnBlockerMlResult() {
 }
 
 func injectBuyingEvent() {
-	if err := container.Singleton(func() service.IAdvBuyingService {
+	if err := container.Singleton(func() service.IBuyingEventService {
 		return manager.BuyingEventManagerConstructor()
 	}); err != nil {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IBuyingEventDal {
-		return mongodb_driver.MDbDBuyingEventDalConstructor()
+		return Cassandra.NewCassBuyingEventDal(cassandra.BuyingEventModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -333,7 +389,7 @@ func injectClient() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IClientDal {
-		return mongodb_driver.MDbDClientDalConstructor()
+		return Cassandra.NewCassClientDal(cassandra.ClientDataModel)
 	}); err != nil {
 		panic(err)
 	}
@@ -353,7 +409,7 @@ func injectAdvEvent() {
 		panic(err)
 	}
 	if err := container.Singleton(func() repository.IAdvEventDal {
-		return mongodb_driver.MDbDAdvEventDalConstructor()
+		return Cassandra.NewCassAdvEventDal(cassandra.AdvEventDataModel)
 	}); err != nil {
 		panic(err)
 	}

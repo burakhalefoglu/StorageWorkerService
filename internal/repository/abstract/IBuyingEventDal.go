@@ -1,7 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IBuyingEventDal interface{
-	Add(data *model.BuyingEventModel) error
+type IBuyingEventDal interface {
+	Add(model *model.BuyingEventModel) error
 }

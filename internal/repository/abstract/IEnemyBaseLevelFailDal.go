@@ -1,7 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IEnemyBaseLevelFailDal interface{
-	Add(data *model.EnemyBaseLevelFailModel) error
+type IEnemyBaseLevelFailDal interface {
+	Add(model *model.EnemyBaseLevelFailModel) error
 }

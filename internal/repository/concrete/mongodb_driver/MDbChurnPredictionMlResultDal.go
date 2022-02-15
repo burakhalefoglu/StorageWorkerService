@@ -9,21 +9,25 @@ import (
 	"time"
 )
 
-type mDbDChurnPredictionMlResultDal struct {
+type mDbChurnPredictionMlResultDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDChurnPredictionMlResultDalConstructor() *mDbDChurnPredictionMlResultDal {
-	return &mDbDChurnPredictionMlResultDal{Client: mongodb.GetMongodbClient()}
+func NewMDbChurnPredictionMlResultDal(Table string) *mDbChurnPredictionMlResultDal {
+	return &mDbChurnPredictionMlResultDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDChurnPredictionMlResultDal) Add(data *model.ChurnPredictionMlResultModel) error {
+func (m *mDbChurnPredictionMlResultDal) Add(data *model.ChurnPredictionMlResultModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("churnPredictions")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},

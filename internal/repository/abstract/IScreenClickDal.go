@@ -1,8 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IScreenClickDal interface{
-	Add(data *model.ScreenClickModel) error
+type IScreenClickDal interface {
+	Add(model *model.ScreenClickModel) error
 }
-

@@ -1,8 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type IEnemyBaseLoginLevelDal interface{
-	Add(data *model.EnemyBaseLoginLevelModel) error
+type IEnemyBaseLoginLevelDal interface {
+	Add(model *model.EnemyBaseLoginLevelModel) error
 }
-

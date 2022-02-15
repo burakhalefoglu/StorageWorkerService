@@ -2,12 +2,13 @@ package model
 
 import "time"
 
-type ChurnBlockerMlResultModel struct{
-	ClientId string
-	ProjectId string
-	CustomerId string
-	ModelType string
+type ChurnBlockerMlResultModel struct {
+	Id          int64
+	ClientId    int64
+	ProjectId   int64
+	CustomerId  int64
+	ModelType   string
 	ModelResult float32
-	DateTime time.Time
+	DateTime    time.Time
+	Status      bool
 }
-

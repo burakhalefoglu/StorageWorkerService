@@ -9,23 +9,26 @@ import (
 	"time"
 )
 
-type mDbDClientDal struct {
+type mDbClientDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDClientDalConstructor() *mDbDClientDal {
-	return &mDbDClientDal{Client: mongodb.GetMongodbClient()}
+func NewMDbClientDal(Table string) *mDbClientDal {
+	return &mDbClientDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDClientDal) Add(data *model.ClientDataModel) error {
+func (m *mDbClientDal) Add(data *model.ClientDataModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("clientModels")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
-		{"ClientId", data.ClientId},
 		{"IsPaidClient", data.IsPaidClient},
 		{"PaidTime", data.PaidTime},
 		{"CreatedAt", data.CreatedAt},
@@ -36,22 +39,23 @@ func (m *mDbDClientDal) Add(data *model.ClientDataModel) error {
 	return nil
 }
 
-func (m *mDbDClientDal) UpdateById(clientId string, data *model.ClientDataModel) error {
+func (m *mDbClientDal) UpdateById(Id string, data *model.ClientDataModel) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	update := bson.D{{"$set", bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
-		{"ClientId", data.ClientId},
 		{"IsPaidClient", data.IsPaidClient},
 		{"PaidTime", data.PaidTime},
 		{"CreatedAt", data.CreatedAt},
 		{"UpdatedAt", time.Now()},
 	}}}
 
-	collection := m.Client.Database("Client").Collection("ClientModel")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	updateResult := collection.FindOneAndUpdate(ctx, bson.D{{
-		"ClientId", clientId,
+		"ClientId", Id,
 	}}, update)
 	if updateResult.Err() != nil {
 		return updateResult.Err()
@@ -59,23 +63,23 @@ func (m *mDbDClientDal) UpdateById(clientId string, data *model.ClientDataModel)
 	return nil
 }
 
-func (m *mDbDClientDal) GetById(clientId string) (*model.ClientDataModel, error) {
+func (m *mDbClientDal) GetById(Id string) (*model.ClientDataModel, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("Client").Collection("ClientModel")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var result = collection.FindOne(ctx, bson.D{{
-		"ClientId", clientId,
+		"ClientId", Id,
 	}})
 
-	var model = model.ClientDataModel{}
+	var dataModel = model.ClientDataModel{}
 	if result.Err() != nil {
-		return &model, result.Err()
+		return &dataModel, result.Err()
 	}
-	var err = result.Decode(&model)
+	var err = result.Decode(&dataModel)
 	if err != nil {
-		return &model, err
+		return &dataModel, err
 	}
-	return &model, nil
+	return &dataModel, nil
 }

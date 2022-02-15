@@ -12,7 +12,7 @@ type IContainer interface {
 	Inject()
 }
 
-func InjectContainers(container IContainer){
+func InjectContainers(container IContainer) {
 	container.Inject()
 }
 
@@ -21,7 +21,7 @@ var Kafka kafka.IKafka
 var JsonParser jsonParser.IJsonParser
 
 var AdvEventService service.IAdvEventService
-var AdvBuyingService service.IAdvBuyingService
+var AdvBuyingService service.IBuyingEventService
 var ChurnBlockerMlResultService service.IChurnBlockerMlResultService
 var ChurnPredictionMlResultService service.IChurnPredictionMlResultService
 var ClientService service.IClientService
@@ -36,6 +36,9 @@ var ManuelFlowService service.IManuelFlowService
 var OfferBehaviorService service.IOfferBehaviorService
 var ScreenClickService service.IScreenClickService
 var ScreenSwipeService service.IScreenSwipeService
+var ItemService service.IItemService
+var SkillService service.ISkillService
+var TemporaryAbilityService service.ITemporaryAbilityService
 
 var AdvEventDal repository.IAdvEventDal
 var BuyingEventDal repository.IBuyingEventDal
@@ -53,4 +56,6 @@ var ManuelFlowDal repository.IManuelFlowDal
 var OfferBehaviorDal repository.IOfferBehaviorDal
 var ScreenClickDal repository.IScreenClickDal
 var ScreenSwipeDal repository.IScreenSwipeDal
-
+var ItemDal repository.IItemDal
+var SkillDal repository.ISkillDal
+var TemporaryAbilityDal repository.ITemporaryAbilityDal

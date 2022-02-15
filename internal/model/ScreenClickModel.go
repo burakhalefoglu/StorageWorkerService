@@ -2,18 +2,19 @@ package model
 
 import "time"
 
-type ScreenClickModel struct{
-
-	ClientId string
-	ProjectId string
-	CustomerId string
-	StartLocX float32
-	StartLocY float32
+type ScreenClickModel struct {
+	Id         int64
+	ClientId   int64
+	ProjectId  int64
+	CustomerId int64
+	StartLocX  float32
+	StartLocY  float32
 	FinishLocX float32
 	FinishLocY float32
-	LevelName string
+	LevelName  string
 	LevelIndex int
-	TabCount int
-	FingerID int
-	CreatedAt time.Time
+	TabCount   int
+	FingerId   int
+	CreatedAt  time.Time
+	Status     bool
 }

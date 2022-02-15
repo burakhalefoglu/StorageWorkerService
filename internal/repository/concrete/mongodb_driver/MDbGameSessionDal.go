@@ -9,26 +9,28 @@ import (
 	"time"
 )
 
-type mDbDLevelBaseSessionDal struct {
+type mDbGameSessionDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDLevelBaseSessionDalConstructor() *mDbDLevelBaseSessionDal {
-	return &mDbDLevelBaseSessionDal{Client: mongodb.GetMongodbClient()}
+func NewMDbGameSessionDal(Table string) *mDbGameSessionDal {
+	return &mDbGameSessionDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDLevelBaseSessionDal) Add(data *model.LevelBaseSessionModel) error {
+func (m *mDbGameSessionDal) Add(data *model.GameSessionModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("levelBaseSessions")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"LevelName", data.LevelName},
-		{"LevelIndex", data.LevelIndex},
 		{"SessionTimeMinute", data.SessionTimeMinute},
 		{"SessionStartTime", data.SessionStartTime},
 		{"SessionFinishTime", data.SessionFinishTime},

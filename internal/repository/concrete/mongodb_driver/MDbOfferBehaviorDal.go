@@ -9,29 +9,31 @@ import (
 	"time"
 )
 
-type mDbDAdvEventDal struct {
+type mDbOfferBehaviorDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDAdvEventDalConstructor() *mDbDAdvEventDal {
-	return &mDbDAdvEventDal{Client: mongodb.GetMongodbClient()}
+func NewMDbOfferBehaviorDal(Table string) *mDbOfferBehaviorDal {
+	return &mDbOfferBehaviorDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDAdvEventDal) Add(data *model.AdvEventDataModel) error {
+func (m *mDbOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("advEvents")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
-		{"AdvType", data.AdvType},
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"InMinutes", data.InMinutes},
-		{"LevelIndex", data.LevelIndex},
-		{"LevelName", data.LevelName},
-		{"TriggeredTime", data.TriggeredTime},
+		{"DateTime", data.DateTime},
+		{"OfferId", data.OfferId},
+		{"IsBuyOffer", data.IsBuyOffer},
 	})
 	if err != nil {
 		return err

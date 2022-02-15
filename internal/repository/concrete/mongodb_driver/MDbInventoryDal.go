@@ -9,27 +9,32 @@ import (
 	"time"
 )
 
-type mDbDOfferBehaviorDal struct {
+type mDbInventoryDal struct {
 	Client *mongo.Client
+	Table  string
 }
 
-func MDbDOfferBehaviorDalConstructor() *mDbDOfferBehaviorDal {
-	return &mDbDOfferBehaviorDal{Client: mongodb.GetMongodbClient()}
+func NewMDbInventoryDal(Table string) *mDbInventoryDal {
+	return &mDbInventoryDal{Client: mongodb.GetMongodbClient(),
+		Table: Table}
 }
 
-func (m *mDbDOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error {
+func (m *mDbInventoryDal) Add(data *model.InventoryModel) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := m.Client.Database("ClientDatabase").Collection("offerBehaviors")
+	collection := m.Client.Database("ClientDatabase").Collection(m.Table)
 	var _, err = collection.InsertOne(ctx, bson.D{
+		{"Id", data.Id},
+		{"Status", data.Status},
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"DateTime", data.DateTime},
-		{"OfferId", data.OfferId},
-		{"IsBuyOffer", data.IsBuyOffer},
+		{"CustomerId", data.MinorMine},
+		{"CustomerId", data.ModerateMine},
+		{"CustomerId", data.PreciousMine},
+		{"CustomerId", data.CreatedAt},
 	})
 	if err != nil {
 		return err

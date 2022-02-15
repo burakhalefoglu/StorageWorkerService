@@ -1,8 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type ILocationDal interface{
-	Add(data *model.LocationModel) error
+type ILocationDal interface {
+	Add(model *model.LocationModel) error
 }
-

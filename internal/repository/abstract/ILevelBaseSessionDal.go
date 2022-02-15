@@ -1,7 +1,9 @@
 package abstract
 
-import "StorageWorkerService/internal/model"
+import (
+	"StorageWorkerService/internal/model"
+)
 
-type ILevelBaseSessionDal interface{
-	Add(data *model.LevelBaseSessionModel) error
+type ILevelBaseSessionDal interface {
+	Add(model *model.LevelBaseSessionModel) error
 }
