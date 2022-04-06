@@ -27,6 +27,7 @@ type insertController struct {
 	ManuelFlowService                 *abstract.IManuelFlowService
 	ChurnPredictionSuccessRateService *abstract.IChurnPredictionSuccessRateService
 	AdvStrategyBehaviorService        *abstract.IAdvStrategyBehaviorService
+	ClientService                     *abstract.IClientService
 }
 
 func InsertControllerConstructor() *insertController {
@@ -48,16 +49,22 @@ func InsertControllerConstructor() *insertController {
 		ManuelFlowService:                 &IoC.ManuelFlowService,
 		ChurnPredictionSuccessRateService: &IoC.ChurnPredictionSuccessRateService,
 		AdvStrategyBehaviorService:        &IoC.AdvStrategyBehaviorService,
+		ClientService:                     &IoC.ClientService,
 	}
 }
 
 func (controller *insertController) StartListen(waitGroup *sync.WaitGroup) {
-	waitGroup.Add(17)
+	waitGroup.Add(18)
 	helper.CreateHealthFile()
 	go (*controller.Kafka).Consume("AdvEventDataModel",
 		"AdvEventDataModel_ConsumerGroup",
 		waitGroup,
 		(*controller.AdvEventService).AddAdvEventData)
+
+	go (*controller.Kafka).Consume("ClientDataModel",
+		"ClientDataModel_ConsumerGroup",
+		waitGroup,
+		(*controller.ClientService).AddClient)
 
 	go (*controller.Kafka).Consume("BuyingEventDataModel",
 		"BuyingEventDataModel_ConsumerGroup",
