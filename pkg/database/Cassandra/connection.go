@@ -42,12 +42,6 @@ func ConnectDatabase() *gocql.Session {
 		})
 	}
 
-	if err = session.Query("use client_database").Exec(); err != nil {
-		clogger.Error(&map[string]interface{}{
-			"keyspace selection err: ": err.Error(),
-		})
-	}
-
 	for _, q := range GetTableQueries() {
 		err = session.Query(q).Exec()
 		clogger.Error(&map[string]interface{}{
