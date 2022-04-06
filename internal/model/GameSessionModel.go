@@ -7,7 +7,8 @@ type GameSessionModel struct {
 	ClientId          int64
 	ProjectId         int64
 	CustomerId        int64
-	SessionTimeMinute float32
+	SessionTime       float32
+	CreatedAt         time.Time
 	SessionStartTime  time.Time
 	SessionFinishTime time.Time
 	Status            bool

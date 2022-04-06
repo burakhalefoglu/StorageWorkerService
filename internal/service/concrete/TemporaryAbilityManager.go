@@ -5,7 +5,9 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type temporaryAbilityManager struct {
@@ -20,12 +22,14 @@ func NewTemporaryAbilityManager() *temporaryAbilityManager {
 
 func (i *temporaryAbilityManager) AddTemporaryAbilityData(data *model.TemporaryAbilityModel) (success bool, message string) {
 
-	defer log.Print("temporaryAbilityManager", "AddTemporaryAbilityData",
-		data.Id)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", data.Id): "added",
+	})
 
 	if err := (*i.TemporaryAbilityDal).Add(data); err != nil {
-		log.Fatal("temporaryAbilityManager", "AddTemporaryAbilityData",
-			"TemporaryAbilityDal_Add", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
 		return false, err.Error()
 	}
 	return true, ""

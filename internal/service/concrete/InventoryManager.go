@@ -6,7 +6,9 @@ import (
 	"StorageWorkerService/internal/repository/abstract"
 	service "StorageWorkerService/internal/service/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type inventoryManager struct {
@@ -29,13 +31,15 @@ func (i *inventoryManager) AddInventoryData(data *[]byte) (success bool, message
 
 	mDto := model.InventoryModelDto{}
 	if err := (*i.Parser).DecodeJson(data, &mDto); err != nil {
-		log.Fatal("InventoryManager", "AddInventoryData",
-			"byte array to InventoryModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("InventoryManager", "AddInventoryData",
-		mDto.ClientId, mDto.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", mDto.ClientId): "added",
+	})
 
 	m := model.InventoryModel{
 		Id:           mDto.Id,
@@ -50,26 +54,33 @@ func (i *inventoryManager) AddInventoryData(data *[]byte) (success bool, message
 	}
 
 	if err := (*i.InventoryDal).Add(&m); err != nil {
-		log.Fatal("InventoryManager", "AddInventoryData",
-			"InventoryDal_Add", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"InventoryDal_Add: ": err,
+		})
 		return false, err.Error()
 	}
-	
+
 	for _, item := range mDto.Items {
 		if s, m := (*i.ItemService).AddItemData(&item); s == false {
-			log.Fatal("ItemManager", "AddItemData", "err message: ", m)
+			clogger.Error(&map[string]interface{}{
+				"err message: ": m,
+			})
 		}
 	}
 
 	for _, skill := range mDto.Skills {
 		if s, m := (*i.SkillService).AddSkillData(&skill); s == false {
-			log.Fatal("SkillManager", "AddSkillData", "err message: ", m)
+			clogger.Error(&map[string]interface{}{
+				"err message: ": m,
+			})
 		}
 	}
 
 	for _, temporaryAbility := range mDto.TemporaryAbilities {
 		if s, m := (*i.temporaryAbilityService).AddTemporaryAbilityData(&temporaryAbility); s == false {
-			log.Fatal("TemporaryAbilityManager", "AddTemporaryAbilityData", "err message: ", m)
+			clogger.Error(&map[string]interface{}{
+				"err message: ": m,
+			})
 		}
 	}
 

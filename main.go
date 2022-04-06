@@ -3,13 +3,15 @@ package main
 import (
 	"StorageWorkerService/internal/IoC"
 	"StorageWorkerService/internal/IoC/golobby"
-	"StorageWorkerService/internal/controller"
-	"StorageWorkerService/internal/controller/kafka"
+	IController "StorageWorkerService/internal/controller"
+	KafkaController "StorageWorkerService/internal/controller/kafka"
 	"StorageWorkerService/pkg/helper"
-	"github.com/joho/godotenv"
 	"log"
 	"runtime"
 	"sync"
+
+	logger "github.com/appneuroncompany/light-logger"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -22,6 +24,7 @@ func main() {
 	}
 
 	IoC.InjectContainers(golobby.InjectionConstructor())
+	logger.Log.App = "StorageWorkerService"
 
 	var waitGroup sync.WaitGroup
 	IController.StartInsertListener(&waitGroup, KafkaController.InsertControllerConstructor())

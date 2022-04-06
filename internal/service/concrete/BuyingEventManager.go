@@ -6,13 +6,15 @@ import (
 	abstractRepo "StorageWorkerService/internal/repository/abstract"
 	abstractService "StorageWorkerService/internal/service/abstract"
 	JSonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type buyingEventManager struct {
-	Parser *JSonParser.IJsonParser
+	Parser         *JSonParser.IJsonParser
 	BuyingEventDal *abstractRepo.IBuyingEventDal
-	ClientService *abstractService.IClientService
+	ClientService  *abstractService.IClientService
 }
 
 func BuyingEventManagerConstructor() *buyingEventManager {
@@ -21,34 +23,38 @@ func BuyingEventManagerConstructor() *buyingEventManager {
 }
 
 // AddBuyingEventData ! Transaction is required.
-func (buying *buyingEventManager)AddBuyingEventData(data *[]byte)(success bool,message string){
+func (buying *buyingEventManager) AddBuyingEventData(data *[]byte) (success bool, message string) {
 
 	buyingEventModel := model.BuyingEventModel{}
 	if err := (*buying.Parser).DecodeJson(data, &buyingEventModel); err != nil {
-		log.Fatal("BuyingEventManager", "AddAdvEventData",
-			"byte array to BuyingEventModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("BuyingEventManager", "AddBuyingEventData",
-		buyingEventModel.ClientId, buyingEventModel.ProjectId)
-
 	if err := (*buying.BuyingEventDal).Add(&buyingEventModel); err != nil {
-		log.Fatal("BuyingEventManager", "AddBuyingEventData",
-			"BuyingEventDal_Add", err.Error())
-		return  false, err.Error()
+		clogger.Error(&map[string]interface{}{
+			"BuyingEventDal_Add": err,
+		})
+		return false, err.Error()
 	}
 
 	var clientModel, s, m = (*buying.ClientService).GetByClientId(buyingEventModel.ClientId)
-	if s == false{
-		return  false, m
+	if s == false {
+		return false, m
 	}
-	if clientModel.IsPaidClient == 0{
-		clientModel.IsPaidClient = 1
-		success, message := (*buying.ClientService).UpdateByClientId(clientModel.ClientId, clientModel)
-		if success != true{
-			return  false, message
+	if clientModel.IsPaidClient == false {
+		clientModel.IsPaidClient = true
+		success, message := (*buying.ClientService).UpdateByClientId(buyingEventModel.ClientId, clientModel)
+		if success != true {
+			return false, message
 		}
 	}
-	return  true, ""
+
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("BuyingEvent: %d", buyingEventModel.Id): "added",
+	})
+
+	return true, ""
 }

@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type clientManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser    *JsonParser.IJsonParser
 	ClientDal *abstract.IClientDal
 }
 
@@ -18,49 +20,58 @@ func ClientManagerConstructor() *clientManager {
 		ClientDal: &IoC.ClientDal}
 }
 
-func (c *clientManager)AddClient(data *[]byte)(success bool,message string){
+func (c *clientManager) AddClient(data *[]byte) (success bool, message string) {
 
 	client := model.ClientDataModel{}
 	if err := (*c.Parser).DecodeJson(data, &client); err != nil {
-		log.Fatal("ClientManager", "AddClient",
-			"byte array to ClientDataModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("ClientManager", "AddClient",
-		client.ClientId, client.ProjectId)
-
-	if err:= (*c.ClientDal).Add(&client); err != nil {
-		log.Fatal("ClientManager", "AddClient",
-			"ClientDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*c.ClientDal).Add(&client); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"ClientDal_Add": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Client: %d", client.Id): "added",
+	})
+
+	return true, ""
 }
 
-func (c *clientManager)UpdateByClientId(clientId string, data *model.ClientDataModel)(success bool,message string){
+func (c *clientManager) UpdateByClientId(clientId int64, data *model.ClientDataModel) (success bool, message string) {
 
-	defer log.Print("ClientManager", "UpdateByClientId",
-		clientId, data.ProjectId)
-
-	if err:= (*c.ClientDal).UpdateById(clientId, data); err != nil {
-		log.Fatal("ClientManager", "UpdateByClientId",
-			"ClientDal_UpdateById", err.Error())
-		return  false, err.Error()
+	if err := (*c.ClientDal).UpdateById(clientId, data); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"ClientDal_UpdateById": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Client: %d", clientId): "update",
+	})
+
+	return true, ""
 
 }
 
-func (c *clientManager) GetByClientId (clientId string)(data *model.ClientDataModel, success bool,message string){
-
-	defer log.Print("ClientManager", "GetByClientId", clientId)
+func (c *clientManager) GetByClientId(clientId int64) (data *model.ClientDataModel, success bool, message string) {
 
 	var client, err = (*c.ClientDal).GetById(clientId)
 	if err != nil {
-		log.Fatal("ClientManager", "GetByClientId",
-			"ClientDal_GetById", err.Error())
-	return nil, false, err.Error()
+		clogger.Error(&map[string]interface{}{
+			"ClientDal_GetById": err.Error(),
+		})
+		return nil, false, err.Error()
 	}
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Client: %d", clientId): "get",
+	})
 	return client, true, ""
 }

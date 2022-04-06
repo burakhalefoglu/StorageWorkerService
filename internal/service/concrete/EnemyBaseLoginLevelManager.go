@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type enemyBaseLoginLevelManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser                 *JsonParser.IJsonParser
 	EnemyBaseLoginLevelDal *abstract.IEnemyBaseLoginLevelDal
 }
 
@@ -18,23 +20,26 @@ func EnemyBaseLoginLevelManagerConstructor() *enemyBaseLoginLevelManager {
 		EnemyBaseLoginLevelDal: &IoC.EnemyBaseLoginLevelDal}
 }
 
-func (e *enemyBaseLoginLevelManager)AddEnemyBaseLoginLevelData(data *[]byte)(success bool,message string){
+func (e *enemyBaseLoginLevelManager) AddEnemyBaseLoginLevelData(data *[]byte) (success bool, message string) {
 
 	m := model.EnemyBaseLoginLevelModel{}
 	if err := (*e.Parser).DecodeJson(data, &m); err != nil {
-		log.Fatal("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
-			"byte array to EnemyBaseLoginLevelModel", "Json Parser Decode Err: ", err.Error())
-		return false,  err.Error()
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
+		return false, err.Error()
 	}
 
-	defer log.Print("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
-		m.ClientId, m.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", m.ClientId): "added",
+	})
 
-	err:= (*e.EnemyBaseLoginLevelDal).Add(&m)
+	err := (*e.EnemyBaseLoginLevelDal).Add(&m)
 	if err != nil {
-		log.Fatal("EnemyBaseLoginLevelManager", "AddEnemyBaseLoginLevelData",
-			"EnemyBaseLoginLevelDal_Add", err.Error())
-		return  false, err.Error()
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }

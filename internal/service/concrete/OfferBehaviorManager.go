@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type offerBehaviorManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser           *JsonParser.IJsonParser
 	OfferBehaviorDal *abstract.IOfferBehaviorDal
 }
 
@@ -18,22 +20,24 @@ func OfferBehaviorManagerConstructor() *offerBehaviorManager {
 		OfferBehaviorDal: &IoC.OfferBehaviorDal}
 }
 
-func (o *offerBehaviorManager)AddOfferBehaviorData(data *[]byte)(success bool,message string){
+func (o *offerBehaviorManager) AddOfferBehaviorData(data *[]byte) (success bool, message string) {
 	m := model.OfferBehaviorModel{}
 	if err := (*o.Parser).DecodeJson(data, &m); err != nil {
-		log.Fatal("OfferBehaviorManager", "AddOfferBehaviorData",
-			"byte array to OfferBehaviorModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("OfferBehaviorManager", "AddOfferBehaviorData",
-		m.ClientId, m.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", m.ClientId): "added",
+	})
 
-	if err:= (*o.OfferBehaviorDal).Add(&m); err != nil {
-		log.Fatal("OfferBehaviorManager", "AddOfferBehaviorData_Add",
-			"OfferBehaviorDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*o.OfferBehaviorDal).Add(&m); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }
-

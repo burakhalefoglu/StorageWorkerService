@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type screenSwipeManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser         *JsonParser.IJsonParser
 	ScreenSwipeDal *abstract.IScreenSwipeDal
 }
 
@@ -18,25 +20,25 @@ func ScreenSwipeManagerConstructor() *screenSwipeManager {
 		ScreenSwipeDal: &IoC.ScreenSwipeDal}
 }
 
-func (scr *screenSwipeManager)AddScreenSwipeData(data *[]byte)(success bool,message string){
+func (scr *screenSwipeManager) AddScreenSwipeData(data *[]byte) (success bool, message string) {
 
 	screenSwipeData := model.ScreenSwipeModel{}
 	if err := (*scr.Parser).DecodeJson(data, &screenSwipeData); err != nil {
-		log.Fatal("ScreenSwipeManager", "AddScreenSwipeData",
-			"byte array to ScreenSwipeModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("ScreenSwipeManager", "AddScreenSwipeData",
-		screenSwipeData.ClientId, screenSwipeData.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", screenSwipeData.ClientId): "added",
+	})
 
-	if err:= (*scr.ScreenSwipeDal).Add(&screenSwipeData); err != nil {
-		log.Fatal("ScreenSwipeManager", "AddScreenSwipeData",
-			"ScreenSwipeDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*scr.ScreenSwipeDal).Add(&screenSwipeData); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }
-
-
-

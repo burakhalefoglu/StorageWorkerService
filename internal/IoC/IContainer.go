@@ -39,6 +39,8 @@ var ScreenSwipeService service.IScreenSwipeService
 var ItemService service.IItemService
 var SkillService service.ISkillService
 var TemporaryAbilityService service.ITemporaryAbilityService
+var ChurnPredictionSuccessRateService service.IChurnPredictionSuccessRateService
+var AdvStrategyBehaviorService service.IAdvStrategyBehaviorService
 
 var AdvEventDal repository.IAdvEventDal
 var BuyingEventDal repository.IBuyingEventDal
@@ -59,3 +61,5 @@ var ScreenSwipeDal repository.IScreenSwipeDal
 var ItemDal repository.IItemDal
 var SkillDal repository.ISkillDal
 var TemporaryAbilityDal repository.ITemporaryAbilityDal
+var ChurnPredictionSuccessRateDal repository.IChurnPredictionSuccessRateDal
+var AdvStrategyBehaviorDal repository.IAdvStrategyBehaviorDal

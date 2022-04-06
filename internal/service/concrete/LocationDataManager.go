@@ -5,12 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
-
 type locationManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser      *JsonParser.IJsonParser
 	LocationDal *abstract.ILocationDal
 }
 
@@ -19,21 +20,24 @@ func LocationManagerConstructor() *locationManager {
 		LocationDal: &IoC.LocationDal}
 }
 
-func (loc *locationManager)AddLocationData(data *[]byte)(success bool,message string){
+func (loc *locationManager) AddLocationData(data *[]byte) (success bool, message string) {
 	locationModel := model.LocationModel{}
 	if err := (*loc.Parser).DecodeJson(data, &locationModel); err != nil {
-		log.Fatal("locationManager", "AddLocationData",
-			"byte array to LocationModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("locationManager", "AddLocationData",
-		locationModel.ClientId, locationModel.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", locationModel.ClientId): "added",
+	})
 
 	if err := (*loc.LocationDal).Add(&locationModel); err != nil {
-		log.Fatal("locationManager", "AddLocationData",
-			"LocationDal_Add", err.Error())
-		return  false, err.Error()
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }

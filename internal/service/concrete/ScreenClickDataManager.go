@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type screenClickManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser         *JsonParser.IJsonParser
 	ScreenClickDal *abstract.IScreenClickDal
 }
 
@@ -18,26 +20,25 @@ func ScreenClickManagerConstructor() *screenClickManager {
 		ScreenClickDal: &IoC.ScreenClickDal}
 }
 
-func (scr *screenClickManager)AddScreenClickData(data *[]byte)(success bool,message string){
+func (scr *screenClickManager) AddScreenClickData(data *[]byte) (success bool, message string) {
 
 	screenClickData := model.ScreenClickModel{}
 	if err := (*scr.Parser).DecodeJson(data, &screenClickData); err != nil {
-		log.Fatal("ScreenClickManager", "AddScreenClickData",
-			"byte array to ScreenClickModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Println("ScreenClickManager", "AddScreenClickData",
-		screenClickData.ClientId, screenClickData.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", screenClickData.ClientId): "added",
+	})
 
-	if err:= (*scr.ScreenClickDal).Add(&screenClickData); err != nil {
-		log.Fatal("ScreenClickManager", "AddScreenClickData_Add",
-			"ScreenClickDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*scr.ScreenClickDal).Add(&screenClickData); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }
-
-
-
-

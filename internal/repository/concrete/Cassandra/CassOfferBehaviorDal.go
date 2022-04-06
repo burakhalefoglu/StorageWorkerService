@@ -4,6 +4,7 @@ import (
 	"StorageWorkerService/internal/model"
 	cassandra "StorageWorkerService/pkg/database/Cassandra"
 	"fmt"
+
 	"github.com/gocql/gocql"
 )
 
@@ -18,8 +19,8 @@ func NewOfferBehaviorDal(Table string) *cassOfferBehaviorDal {
 }
 
 func (m *cassOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error {
-	if err := m.Client.Query(fmt.Sprintf("INSERT INTO %s(id, client_id, project_id, customer_id, version, offer_id, date_time, isBuy_offer, status) VALUES(?,?,?,?,?,?,?,?,?)", m.Table),
-		data.Id, data.ClientId, data.ProjectId, data.CustomerId, data.Version, data.OfferId, data.DateTime, data.IsBuyOffer, data.Status).Exec(); err != nil {
+	if err := m.Client.Query(fmt.Sprintf("INSERT INTO %s(id, client_id, project_id, customer_id, version, offer_id, created_at, isBuy_offer, status) VALUES(?,?,?,?,?,?,?,?,?)", m.Table),
+		data.Id, data.ClientId, data.ProjectId, data.CustomerId, data.Version, data.OfferId, data.CreatedAt, data.IsBuyOffer, data.Status).Exec(); err != nil {
 		return err
 	}
 	return nil

@@ -9,45 +9,50 @@ import (
 )
 
 type insertController struct {
-	Kafka                          *kafka.IKafka
-	AdvEventService                *abstract.IAdvEventService
-	AdvBuyingService               *abstract.IBuyingEventService
-	HardwareService                *abstract.IHardwareService
-	LocationService                *abstract.ILocationService
-	ScreenSwipeService             *abstract.IScreenSwipeService
-	ScreenClickService             *abstract.IScreenClickService
-	LevelBaseSessionService        *abstract.ILevelBaseSessionService
-	GameSessionService             *abstract.IGameSessionService
-	InventoryService               *abstract.IInventoryService
-	EnemyBaseLoginLevelService     *abstract.IEnemyBaseLoginLevelService
-	EnemyBaseLevelFailService      *abstract.IEnemyBaseLevelFailService
-	OfferBehaviorService           *abstract.IOfferBehaviorService
-	ChurnPredictionMlResultService *abstract.IChurnPredictionMlResultService
-	ChurnBlockerMlResultService    *abstract.IChurnBlockerMlResultService
-	ManuelFlowService              *abstract.IManuelFlowService
+	Kafka                             *kafka.IKafka
+	AdvEventService                   *abstract.IAdvEventService
+	AdvBuyingService                  *abstract.IBuyingEventService
+	HardwareService                   *abstract.IHardwareService
+	LocationService                   *abstract.ILocationService
+	ScreenSwipeService                *abstract.IScreenSwipeService
+	ScreenClickService                *abstract.IScreenClickService
+	LevelBaseSessionService           *abstract.ILevelBaseSessionService
+	GameSessionService                *abstract.IGameSessionService
+	InventoryService                  *abstract.IInventoryService
+	EnemyBaseLoginLevelService        *abstract.IEnemyBaseLoginLevelService
+	EnemyBaseLevelFailService         *abstract.IEnemyBaseLevelFailService
+	OfferBehaviorService              *abstract.IOfferBehaviorService
+	ChurnPredictionMlResultService    *abstract.IChurnPredictionMlResultService
+	ChurnBlockerMlResultService       *abstract.IChurnBlockerMlResultService
+	ManuelFlowService                 *abstract.IManuelFlowService
+	ChurnPredictionSuccessRateService *abstract.IChurnPredictionSuccessRateService
+	AdvStrategyBehaviorService        *abstract.IAdvStrategyBehaviorService
 }
 
 func InsertControllerConstructor() *insertController {
 	return &insertController{Kafka: &IoC.Kafka,
-		AdvEventService:                &IoC.AdvEventService,
-		AdvBuyingService:               &IoC.AdvBuyingService,
-		HardwareService:                &IoC.HardwareService,
-		LocationService:                &IoC.LocationService,
-		ScreenSwipeService:             &IoC.ScreenSwipeService,
-		ScreenClickService:             &IoC.ScreenClickService,
-		LevelBaseSessionService:        &IoC.LevelBaseSessionService,
-		GameSessionService:             &IoC.GameSessionService,
-		InventoryService:               &IoC.InventoryService,
-		EnemyBaseLoginLevelService:     &IoC.EnemyBaseLoginLevelService,
-		EnemyBaseLevelFailService:      &IoC.EnemyBaseLevelFailService,
-		OfferBehaviorService:           &IoC.OfferBehaviorService,
-		ChurnPredictionMlResultService: &IoC.ChurnPredictionMlResultService,
-		ChurnBlockerMlResultService:    &IoC.ChurnBlockerMlResultService,
-		ManuelFlowService:              &IoC.ManuelFlowService}
+		AdvEventService:                   &IoC.AdvEventService,
+		AdvBuyingService:                  &IoC.AdvBuyingService,
+		HardwareService:                   &IoC.HardwareService,
+		LocationService:                   &IoC.LocationService,
+		ScreenSwipeService:                &IoC.ScreenSwipeService,
+		ScreenClickService:                &IoC.ScreenClickService,
+		LevelBaseSessionService:           &IoC.LevelBaseSessionService,
+		GameSessionService:                &IoC.GameSessionService,
+		InventoryService:                  &IoC.InventoryService,
+		EnemyBaseLoginLevelService:        &IoC.EnemyBaseLoginLevelService,
+		EnemyBaseLevelFailService:         &IoC.EnemyBaseLevelFailService,
+		OfferBehaviorService:              &IoC.OfferBehaviorService,
+		ChurnPredictionMlResultService:    &IoC.ChurnPredictionMlResultService,
+		ChurnBlockerMlResultService:       &IoC.ChurnBlockerMlResultService,
+		ManuelFlowService:                 &IoC.ManuelFlowService,
+		ChurnPredictionSuccessRateService: &IoC.ChurnPredictionSuccessRateService,
+		AdvStrategyBehaviorService:        &IoC.AdvStrategyBehaviorService,
+	}
 }
 
 func (controller *insertController) StartListen(waitGroup *sync.WaitGroup) {
-	waitGroup.Add(15)
+	waitGroup.Add(17)
 	helper.CreateHealthFile()
 	go (*controller.Kafka).Consume("AdvEventDataModel",
 		"AdvEventDataModel_ConsumerGroup",
@@ -123,4 +128,14 @@ func (controller *insertController) StartListen(waitGroup *sync.WaitGroup) {
 		"ChurnBlockerMlResultModel_ConsumerGroup",
 		waitGroup,
 		(*controller.ChurnBlockerMlResultService).AddChurnBlockerMlResultData)
+
+	go (*controller.Kafka).Consume("ChurnPredictionSuccessRateModel",
+		"ChurnPredictionSuccessRateModel_ConsumerGroup",
+		waitGroup,
+		(*controller.ChurnPredictionSuccessRateService).AddChurnPredictionSuccessRate)
+
+	go (*controller.Kafka).Consume("AdvStrategyBehaviorModel",
+		"AdvStrategyBehaviorModel_ConsumerGroup",
+		waitGroup,
+		(*controller.AdvStrategyBehaviorService).AddAdvStrategyBehaviorData)
 }

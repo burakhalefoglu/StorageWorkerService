@@ -5,7 +5,8 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type itemManager struct {
@@ -20,12 +21,14 @@ func NewItemManager() *itemManager {
 
 func (i *itemManager) AddItemData(data *model.ItemModel) (success bool, message string) {
 
-	defer log.Print("itemManager", "AddItemData",
-		data.Id)
+	defer clogger.Info(&map[string]interface{}{
+		"Item Status: ": "added",
+	})
 
 	if err := (*i.ItemDal).Add(data); err != nil {
-		log.Fatal("itemManager", "AddItemData",
-			"ItemDal_Add", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
 		return false, err.Error()
 	}
 	return true, ""

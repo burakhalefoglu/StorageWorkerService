@@ -4,9 +4,10 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/pkg/database/mongodb"
 	"context"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 type mDbGameSessionDal struct {
@@ -31,7 +32,7 @@ func (m *mDbGameSessionDal) Add(data *model.GameSessionModel) error {
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"SessionTimeMinute", data.SessionTimeMinute},
+		{"SessionTimeMinute", data.SessionTime},
 		{"SessionStartTime", data.SessionStartTime},
 		{"SessionFinishTime", data.SessionFinishTime},
 	})

@@ -5,13 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
-
-
 type hardwareManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser      *JsonParser.IJsonParser
 	HardwareDal *abstract.IHardwareDal
 }
 
@@ -20,22 +20,25 @@ func HardwareManagerConstructor() *hardwareManager {
 		HardwareDal: &IoC.HardwareDal}
 }
 
-func (hrd *hardwareManager)AddHardwareData(data *[]byte)(success bool,message string){
+func (hrd *hardwareManager) AddHardwareData(data *[]byte) (success bool, message string) {
 
 	hardwareModel := model.HardwareModel{}
 	if err := (*hrd.Parser).DecodeJson(data, &hardwareModel); err != nil {
-		log.Fatal("HardwareManager", "AddHardwareData",
-			"byte array to HardwareModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Println("HardwareManager", "AddHardwareData",
-		hardwareModel.ClientId, hardwareModel.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", hardwareModel.ClientId): "added",
+	})
 
-	if err:= (*hrd.HardwareDal).Add(&hardwareModel); err != nil {
-		log.Fatal("HardwareManager", "AddHardwareData",
-			"HardwareDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*hrd.HardwareDal).Add(&hardwareModel); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }

@@ -7,9 +7,10 @@ import (
 	"StorageWorkerService/pkg/jsonParser/gojson"
 	"StorageWorkerService/test/Mocks/repository"
 	"StorageWorkerService/test/Mocks/service"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_BuyingEventAdd_NoClientError(t *testing.T) {
@@ -25,41 +26,37 @@ func Test_BuyingEventAdd_NoClientError(t *testing.T) {
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
-	m:= model.BuyingEventModel{
-		ClientId:      "FakeClientId",
-		ProjectId:     "FakeProjectId",
-		CustomerId:    "Test",
+	m := model.BuyingEventModel{
+		ClientId:      1,
+		ProjectId:     1,
+		CustomerId:    1,
 		LevelName:     "1",
 		LevelIndex:    1,
 		ProductType:   "test",
-		InWhatMinutes: 12,
+		InMinutes:     12,
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
 	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
-	clientModel:= model.ClientDataModel{
-		ClientId:     "",
-		ProjectId:    "",
-		IsPaidClient: 0,
-		CreatedAt:    time.Time{},
-		PaidTime:     time.Time{},
+	clientModel := model.ClientDataModel{
+		ProjectId: 1,
+		CreatedAt: time.Time{},
+		PaidTime:  time.Time{},
 	}
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, false, "NoClient")
 
-	testClientService.On("UpdateByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.Id,
 		&clientModel).Return(true, "")
 
 	//Act
-	success, err:= buyingEvent.AddBuyingEventData(message)
-
+	success, err := buyingEvent.AddBuyingEventData(message)
 
 	//Assert
 	assert.Equal(t, false, success)
 	assert.Equal(t, "NoClient", err)
 }
-
 
 func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 
@@ -74,42 +71,38 @@ func Test_BuyingEventAdd_UpdateClientError(t *testing.T) {
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
-	m:= model.BuyingEventModel{
-		ClientId:      "FakeClientId",
-		ProjectId:     "FakeProjectId",
-		CustomerId:    "Test",
+	m := model.BuyingEventModel{
+		ClientId:      1,
+		ProjectId:     1,
+		CustomerId:    1,
 		LevelName:     "1",
 		LevelIndex:    1,
 		ProductType:   "test",
-		InWhatMinutes: 12,
+		InMinutes:     12,
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
 	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
-	clientModel:= model.ClientDataModel{
-		ClientId:     "FakeClientId",
-		ProjectId:    "FakeProjectId",
-		IsPaidClient: 0,
+	clientModel := model.ClientDataModel{
+		ProjectId:    1,
+		IsPaidClient: true,
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, true, "")
 
-	testClientService.On("UpdateByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.Id,
 		&clientModel).Return(false, "UpdateError")
 
 	//Act
-	success, err:= buyingEvent.AddBuyingEventData(message)
-
+	success, err := buyingEvent.AddBuyingEventData(message)
 
 	//Assert
 	assert.Equal(t, false, success)
 	assert.Equal(t, "UpdateError", err)
 }
-
-
 
 func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 
@@ -124,39 +117,36 @@ func Test_BuyingEventAdd_SuccessIsTrue(t *testing.T) {
 
 	var buyingEvent = concrete.BuyingEventManagerConstructor()
 
-	m:= model.BuyingEventModel{
-		ClientId:      "FakeClientId",
-		ProjectId:     "FakeProjectId",
-		CustomerId:    "Test",
+	m := model.BuyingEventModel{
+		ClientId:      1,
+		ProjectId:     1,
+		CustomerId:    1,
 		LevelName:     "1",
 		LevelIndex:    1,
 		ProductType:   "test",
-		InWhatMinutes: 12,
+		InMinutes:     12,
 		TriggeredTime: time.Time{},
 	}
 	testBuyingEventDal.On("Add", &m).Return(nil)
 
 	message, _ := (*buyingEvent.Parser).EncodeJson(&m)
 
-	clientModel:= model.ClientDataModel{
-		ClientId:     "FakeClientId",
-		ProjectId:    "FakeProjectId",
-		IsPaidClient: 0,
+	clientModel := model.ClientDataModel{
+		ProjectId:    1,
+		IsPaidClient: false,
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
 
 	testClientService.On("GetByClientId", m.ClientId).Return(&clientModel, true, "")
 
-	testClientService.On("UpdateByClientId", clientModel.ClientId,
+	testClientService.On("UpdateByClientId", clientModel.Id,
 		&clientModel).Return(true, "")
 
 	//Act
-	success, err:= buyingEvent.AddBuyingEventData(message)
-
+	success, err := buyingEvent.AddBuyingEventData(message)
 
 	//Assert
 	assert.Equal(t, true, success)
 	assert.Equal(t, "", err)
 }
-

@@ -5,38 +5,40 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type enemyBaseLevelFailManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser                *JsonParser.IJsonParser
 	EnemyBaseLevelFailDal *abstract.IEnemyBaseLevelFailDal
 }
-
 
 func EnemyBaseLevelFailManagerConstructor() *enemyBaseLevelFailManager {
 	return &enemyBaseLevelFailManager{Parser: &IoC.JsonParser,
 		EnemyBaseLevelFailDal: &IoC.EnemyBaseLevelFailDal}
 }
 
-
-func (e *enemyBaseLevelFailManager)AddEnemyBaseLevelFailData(data *[]byte)(success bool,message string){
+func (e *enemyBaseLevelFailManager) AddEnemyBaseLevelFailData(data *[]byte) (success bool, message string) {
 
 	m := model.EnemyBaseLevelFailModel{}
 	if err := (*e.Parser).DecodeJson(data, &m); err != nil {
-		log.Fatal("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
-			"byte array to EnemyBaseLevelFailModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
-		m.ClientId, m.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", m.ClientId): "added",
+	})
 
-	if err:= (*e.EnemyBaseLevelFailDal).Add(&m); err != nil {
-		log.Fatal("EnemyBaseLevelFailManager", "AddEnemyBaseLevelFailData",
-			"EnemyBaseLevelFailDal_Add", err.Error())
-
-		return  false, err.Error()
+	if err := (*e.EnemyBaseLevelFailDal).Add(&m); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }

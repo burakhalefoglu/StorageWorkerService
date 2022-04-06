@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type churnPredictionMlResultManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser                     *JsonParser.IJsonParser
 	ChurnPredictionMlResultDal *abstract.IChurnPredictionMlResultDal
 }
 
@@ -18,22 +20,26 @@ func ChurnPredictionMlResultManagerConstructor() *churnPredictionMlResultManager
 		ChurnPredictionMlResultDal: &IoC.ChurnPredictionMlResultDal}
 }
 
-func (c *churnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte)(success bool,message string){
+func (c *churnPredictionMlResultManager) AddChurnPredictionMlResultData(data *[]byte) (success bool, message string) {
 
 	churnPredictionModel := model.ChurnPredictionMlResultModel{}
 	if err := (*c.Parser).DecodeJson(data, &churnPredictionModel); err != nil {
-		log.Fatal("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
-			"byte array to ChurnPredictionMlResultModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
-		churnPredictionModel.ClientId, churnPredictionModel.ProjectId)
-
-	if err:= (*c.ChurnPredictionMlResultDal).Add(&churnPredictionModel); err != nil {
-		log.Fatal("ChurnPredictionMlResultManager", "AddChurnPredictionMlResultData",
-			"ChurnPredictionMlResultDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*c.ChurnPredictionMlResultDal).Add(&churnPredictionModel); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"ChurnPredictionMlResultDal_Add": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("ChurnPredictionMlResult: %d", churnPredictionModel.Id): "added",
+	})
+
+	return true, ""
 }

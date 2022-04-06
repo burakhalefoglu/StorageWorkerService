@@ -5,7 +5,9 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type skillManager struct {
@@ -20,12 +22,14 @@ func NewSkillManager() *skillManager {
 
 func (i *skillManager) AddSkillData(data *model.SkillModel) (success bool, message string) {
 
-	defer log.Print("skillManager", "AddSkillData",
-		data.Id)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", data.Id): "added",
+	})
 
 	if err := (*i.SkillDal).Add(data); err != nil {
-		log.Fatal("skillManager", "AddSkillData",
-			"SkillDal_Add", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
 		return false, err.Error()
 	}
 	return true, ""

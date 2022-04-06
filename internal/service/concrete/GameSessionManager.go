@@ -5,11 +5,13 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/internal/repository/abstract"
 	JsonParser "StorageWorkerService/pkg/jsonParser"
-	"log"
+	"fmt"
+
+	"github.com/appneuroncompany/light-logger/clogger"
 )
 
 type gameSessionManager struct {
-	Parser *JsonParser.IJsonParser
+	Parser         *JsonParser.IJsonParser
 	GameSessionDal *abstract.IGameSessionDal
 }
 
@@ -18,22 +20,25 @@ func GameSessionManagerConstructor() *gameSessionManager {
 		GameSessionDal: &IoC.GameSessionDal}
 }
 
-func (g *gameSessionManager)AddGameSessionData(data *[]byte)(success bool,message string){
+func (g *gameSessionManager) AddGameSessionData(data *[]byte) (success bool, message string) {
 
 	m := model.GameSessionModel{}
 	if err := (*g.Parser).DecodeJson(data, &m); err != nil {
-		log.Fatal("GameSessionManager", "AddGameSessionData",
-			"byte array to GameSessionModel", "Json Parser Decode Err: ", err.Error())
+		clogger.Error(&map[string]interface{}{
+			"Json Parser Decode Err: ": err,
+		})
 		return false, err.Error()
 	}
 
-	defer log.Print("GameSessionManager", "AddGameSessionData",
-		m.ClientId, m.ProjectId)
+	defer clogger.Info(&map[string]interface{}{
+		fmt.Sprintf("Data: %d", m.ClientId): "added",
+	})
 
-	if err:= (*g.GameSessionDal).Add(&m); err != nil {
-		log.Fatal("GameSessionManager", "AddGameSessionData",
-			"GameSessionDal_Add", err.Error())
-		return  false, err.Error()
+	if err := (*g.GameSessionDal).Add(&m); err != nil {
+		clogger.Error(&map[string]interface{}{
+			"Repository_Add Error": err,
+		})
+		return false, err.Error()
 	}
-	return  true, ""
+	return true, ""
 }

@@ -7,9 +7,10 @@ import (
 	"StorageWorkerService/pkg/jsonParser/gojson"
 	"StorageWorkerService/test/Mocks/repository"
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_AddClient_SuccessIsTrue(t *testing.T) {
@@ -23,14 +24,12 @@ func Test_AddClient_SuccessIsTrue(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{}
+	m := model.ClientDataModel{}
 	testClientDal.On("Add", &m).Return(nil)
 	message, _ := (*client.Parser).EncodeJson(&m)
 
-
 	//Act
-	success, err:= client.AddClient(message)
-
+	success, err := client.AddClient(message)
 
 	//Assert
 	assert.Equal(t, true, success)
@@ -48,14 +47,12 @@ func Test_AddClient_SuccessIsFalse(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{}
+	m := model.ClientDataModel{}
 	testClientDal.On("Add", &m).Return(errors.New("FakeError"))
 	message, _ := (*client.Parser).EncodeJson(&m)
 
-
 	//Act
-	success, err:= client.AddClient(message)
-
+	success, err := client.AddClient(message)
 
 	//Assert
 	assert.Equal(t, false, success)
@@ -73,12 +70,11 @@ func Test_UpdateByClientId_SuccessIsTrue(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{}
-	testClientDal.On("UpdateById","fakeClientId", &m).Return(nil)
+	m := model.ClientDataModel{}
+	testClientDal.On("UpdateById", 1, &m).Return(nil)
 
 	//Act
-	success, err:= client.UpdateByClientId("fakeClientId", &m)
-
+	success, err := client.UpdateByClientId(1, &m)
 
 	//Assert
 	assert.Equal(t, true, success)
@@ -96,12 +92,11 @@ func Test_UpdateByClientId_SuccessIsFalse(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{}
-	testClientDal.On("UpdateById","fakeClientId", &m).Return(errors.New("FakeError"))
+	m := model.ClientDataModel{}
+	testClientDal.On("UpdateById", 1, &m).Return(errors.New("FakeError"))
 
 	//Act
-	success, err:= client.UpdateByClientId("fakeClientId", &m)
-
+	success, err := client.UpdateByClientId(1, &m)
 
 	//Assert
 	assert.Equal(t, false, success)
@@ -119,23 +114,21 @@ func Test_GetByClientId_SuccessIsTrue(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{
-		ClientId:     "FakeClientId",
-		ProjectId:    "FakeProjectId",
-		IsPaidClient: 0,
+	m := model.ClientDataModel{
+		ProjectId:    1,
+		IsPaidClient: false,
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
-	testClientDal.On("GetById","fakeClientId").Return(&m, nil)
+	testClientDal.On("GetById", 1).Return(&m, nil)
 
 	//Act
-	mdl,success, err:= client.GetByClientId("fakeClientId")
-
+	mdl, success, err := client.GetByClientId(1)
 
 	//Assert
 	assert.Equal(t, true, success)
 	assert.Equal(t, "", err)
-	assert.Equal(t, "FakeClientId", mdl.ClientId)
+	assert.Equal(t, 1, mdl.Id)
 }
 
 func Test_GetByClientId_SuccessIsFalse(t *testing.T) {
@@ -149,18 +142,16 @@ func Test_GetByClientId_SuccessIsFalse(t *testing.T) {
 
 	client := concrete.ClientManagerConstructor()
 
-	m:= model.ClientDataModel{
-		ClientId:     "FakeClientId",
-		ProjectId:    "FakeProjectId",
-		IsPaidClient: 0,
+	m := model.ClientDataModel{
+		ProjectId:    1,
+		IsPaidClient: false,
 		CreatedAt:    time.Time{},
 		PaidTime:     time.Time{},
 	}
-	testClientDal.On("GetById","fakeClientId").Return(&m, errors.New("FakeError"))
+	testClientDal.On("GetById", 1).Return(&m, errors.New("FakeError"))
 
 	//Act
-	mdl,success, err:= client.GetByClientId("fakeClientId")
-
+	mdl, success, err := client.GetByClientId(1)
 
 	//Assert
 	assert.Equal(t, false, success)

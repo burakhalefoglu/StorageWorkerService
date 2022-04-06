@@ -10,29 +10,30 @@ import (
 	"github.com/appneuroncompany/light-logger/clogger"
 )
 
-type manuelFlowManager struct {
-	Parser        *JsonParser.IJsonParser
-	ManuelFlowDal *abstract.IManuelFlowDal
+type advStrategyBehaviorManager struct {
+	Parser                 *JsonParser.IJsonParser
+	AdvStrategyBehaviorDal *abstract.IAdvStrategyBehaviorDal
 }
 
-func ManuelFlowManagerConstructor() *manuelFlowManager {
-	return &manuelFlowManager{Parser: &IoC.JsonParser,
-		ManuelFlowDal: &IoC.ManuelFlowDal}
+func NewAdvStrategyBehaviorManager() *advStrategyBehaviorManager {
+	return &advStrategyBehaviorManager{Parser: &IoC.JsonParser,
+		AdvStrategyBehaviorDal: &IoC.AdvStrategyBehaviorDal}
 }
 
-func (f *manuelFlowManager) AddManuelFlowData(data *[]byte) (success bool, message string) {
-	m := model.ManuelFlowModel{}
-	if err := (*f.Parser).DecodeJson(data, &m); err != nil {
+func (o *advStrategyBehaviorManager) AddAdvStrategyBehaviorData(data *[]byte) (success bool, message string) {
+	m := model.AdvStrategyBehaviorModel{}
+	if err := (*o.Parser).DecodeJson(data, &m); err != nil {
 		clogger.Error(&map[string]interface{}{
 			"Json Parser Decode Err: ": err,
 		})
 		return false, err.Error()
 	}
+
 	defer clogger.Info(&map[string]interface{}{
 		fmt.Sprintf("Data: %d", m.ClientId): "added",
 	})
 
-	if err := (*f.ManuelFlowDal).Add(&m); err != nil {
+	if err := (*o.AdvStrategyBehaviorDal).Add(&m); err != nil {
 		clogger.Error(&map[string]interface{}{
 			"Repository_Add Error": err,
 		})

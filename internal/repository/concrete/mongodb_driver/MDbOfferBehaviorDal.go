@@ -4,9 +4,10 @@ import (
 	"StorageWorkerService/internal/model"
 	"StorageWorkerService/pkg/database/mongodb"
 	"context"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 type mDbOfferBehaviorDal struct {
@@ -31,7 +32,7 @@ func (m *mDbOfferBehaviorDal) Add(data *model.OfferBehaviorModel) error {
 		{"ProjectId", data.ProjectId},
 		{"ClientId", data.ClientId},
 		{"CustomerId", data.CustomerId},
-		{"DateTime", data.DateTime},
+		{"DateTime", data.CreatedAt},
 		{"OfferId", data.OfferId},
 		{"IsBuyOffer", data.IsBuyOffer},
 	})

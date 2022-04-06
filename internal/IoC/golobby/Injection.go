@@ -11,10 +11,11 @@ import (
 	"StorageWorkerService/pkg/jsonParser/gojson"
 	"StorageWorkerService/pkg/kafka"
 	"StorageWorkerService/pkg/kafka/kafkago"
-	"StorageWorkerService/pkg/redis"
-	"StorageWorkerService/pkg/redis/redisv8"
+	cache "StorageWorkerService/pkg/redis"
+	rediscachev8 "StorageWorkerService/pkg/redis/redisv8"
+
+	"github.com/golobby/container/v3"
 )
-import "github.com/golobby/container/v3"
 
 type golobbyInjection struct{}
 
@@ -43,6 +44,8 @@ func (i *golobbyInjection) Inject() {
 	injectOfferBehavior()
 	injectScreenClick()
 	injectScreenSwipe()
+	injectChurnPredictionSuccessRateResult()
+	injectAddAdvStrategyBehavior()
 }
 
 func injectScreenSwipe() {
@@ -418,6 +421,48 @@ func injectAdvEvent() {
 		panic(err)
 	}
 	if err := container.Resolve(&IoC.AdvEventService); err != nil {
+		panic(err)
+	}
+
+}
+
+func injectChurnPredictionSuccessRateResult() {
+	if err := container.Singleton(func() service.IChurnPredictionSuccessRateService {
+		return manager.NewChurnPredictionSuccessRate()
+	}); err != nil {
+		panic(err)
+	}
+	if err := container.Singleton(func() repository.IChurnPredictionSuccessRateDal {
+		return Cassandra.NewCassChurnPredictionSuccessRateDal(cassandra.ChurnPredictionSuccessRateModel)
+	}); err != nil {
+		panic(err)
+	}
+
+	if err := container.Resolve(&IoC.ChurnPredictionSuccessRateDal); err != nil {
+		panic(err)
+	}
+	if err := container.Resolve(&IoC.ChurnPredictionSuccessRateService); err != nil {
+		panic(err)
+	}
+
+}
+
+func injectAddAdvStrategyBehavior() {
+	if err := container.Singleton(func() service.IAdvStrategyBehaviorService {
+		return manager.NewAdvStrategyBehaviorManager()
+	}); err != nil {
+		panic(err)
+	}
+	if err := container.Singleton(func() repository.IAdvStrategyBehaviorDal {
+		return Cassandra.NewCassAdvStrategyBehaviorDal(cassandra.AdvStrategyBehaviorModel)
+	}); err != nil {
+		panic(err)
+	}
+
+	if err := container.Resolve(&IoC.AdvStrategyBehaviorDal); err != nil {
+		panic(err)
+	}
+	if err := container.Resolve(&IoC.AdvStrategyBehaviorService); err != nil {
 		panic(err)
 	}
 

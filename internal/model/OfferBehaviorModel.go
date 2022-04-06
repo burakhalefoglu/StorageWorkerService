@@ -10,6 +10,6 @@ type OfferBehaviorModel struct {
 	Version    int16
 	OfferId    int
 	IsBuyOffer int8
-	DateTime   time.Time
+	CreatedAt  time.Time
 	Status     bool
 }
