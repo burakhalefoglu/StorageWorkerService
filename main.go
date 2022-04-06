@@ -23,7 +23,6 @@ func main() {
 		log.Fatal("Error loading .env file")
 		return
 	}
-
 	IoC.InjectContainers(golobby.InjectionConstructor())
 
 	var waitGroup sync.WaitGroup

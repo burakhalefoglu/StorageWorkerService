@@ -44,9 +44,11 @@ func ConnectDatabase() *gocql.Session {
 
 	for _, q := range GetTableQueries() {
 		err = session.Query(q).Exec()
-		clogger.Error(&map[string]interface{}{
-			"create table err: ": err.Error(),
-		})
+		if err != nil {
+			clogger.Error(&map[string]interface{}{
+				"create table err: ": err,
+			})
+		}
 	}
 
 	return session
