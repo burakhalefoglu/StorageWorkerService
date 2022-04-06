@@ -16,6 +16,7 @@ import (
 
 func main() {
 	defer helper.DeleteHealthFile()
+	logger.Log.App = "StorageWorkerService"
 	runtime.MemProfileRate = 0
 	err := godotenv.Load()
 	if err != nil {
@@ -24,7 +25,6 @@ func main() {
 	}
 
 	IoC.InjectContainers(golobby.InjectionConstructor())
-	logger.Log.App = "StorageWorkerService"
 
 	var waitGroup sync.WaitGroup
 	IController.StartInsertListener(&waitGroup, KafkaController.InsertControllerConstructor())
